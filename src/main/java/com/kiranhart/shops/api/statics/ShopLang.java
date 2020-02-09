@@ -10,6 +10,8 @@ public class ShopLang {
 
     public static final String PREFIX = "prefix";
 
+    public static final String NO_PERMISSION = "no-permission";
+
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";
     public static final String COMMAND_HELP = "cmd.help";

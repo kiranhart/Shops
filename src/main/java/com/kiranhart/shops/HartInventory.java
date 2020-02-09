@@ -1,4 +1,4 @@
-package com.kiranhart.shops.api;
+package com.kiranhart.shops;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;

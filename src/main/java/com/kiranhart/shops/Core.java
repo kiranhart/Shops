@@ -1,6 +1,7 @@
 package com.kiranhart.shops;
 
 import com.kiranhart.shops.api.enums.Settings;
+import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.events.HartInventoryListener;
 import com.kiranhart.shops.util.locale.Locale;
 import com.kiranhart.shops.util.ConfigWrapper;
@@ -16,6 +17,7 @@ public final class Core extends JavaPlugin {
     private Locale locale;
 
     private ConfigWrapper settingsFile;
+    private CommandManager commandManager;
 
     @Override
     public void onLoad() {
@@ -46,6 +48,10 @@ public final class Core extends JavaPlugin {
 
         // register Hart Inventory
         Bukkit.getPluginManager().registerEvents(new HartInventoryListener(), this);
+
+        // commands
+        this.commandManager = new CommandManager();
+        this.commandManager.init();
     }
 
     @Override
@@ -73,6 +79,9 @@ public final class Core extends JavaPlugin {
         return settingsFile;
     }
 
+    /**
+     * @return a hashmap of loaded settings
+     */
     public HashMap<Settings, Object> getLoadedSetting() {
         return this.settings;
     }

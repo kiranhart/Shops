@@ -1,4 +1,5 @@
 prefix = "&8[&bShops&8] &e>>"
+no-permission = "&cYou do not have permission to do that"
 
 cmd.help = "&f/&bshops help"
 cmd.invalid = "&cThat command is not valid"

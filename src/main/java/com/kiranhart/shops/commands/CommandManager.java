@@ -1,6 +1,7 @@
 package com.kiranhart.shops.commands;
 
 import com.kiranhart.shops.Core;
+import com.kiranhart.shops.commands.subcommands.HelpCommand;
 import com.kiranhart.shops.util.Debugger;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
@@ -26,6 +27,7 @@ public class CommandManager implements CommandExecutor {
 
     public void init() {
         Core.getInstance().getCommand(MAIN).setExecutor(this);
+        commands.add(new HelpCommand());
     }
 
     @Override
