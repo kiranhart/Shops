@@ -1,0 +1,4 @@
+prefix = "&8[&bShops&8] &e>>"
+
+cmd.help = "&f/&bshops help"
+cmd.invalid = "&cThat command is not valid"

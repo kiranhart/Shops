@@ -1,0 +1,13 @@
+name: Shops
+version: ${project.version}
+main: com.kiranhart.shops.Core
+api-version: 1.13
+depend: [Vault]
+authors: [Kiran Hart]
+description: Ever wanted to setup categorized shops, this plugin is for you
+website: https://www.kiranhart.com/
+
+commands:
+  shops:
+    description: Main command for the plugin
+    aliases: [shop]
