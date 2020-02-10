@@ -1,1 +1,26 @@
 lang: "en_US"
+
+guis:
+  edit-list:
+    title: "&dSelect a shop to edit"
+    border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+    close-item:
+      item: "BARRIER"
+      name: "&C&LClose"
+      lore:
+        - "&7Click to close inventory"
+    previous-page:
+      item: "ARROW"
+      name: "&e&l<<"
+      lore:
+        - "&7Click to go back a page"
+    next-page:
+      item: "ARROW"
+      name: "&e&l>>"
+      lore:
+        - "&7Click to go to next page"
+    shop-item:
+      item: "LIME_STAINED_GLASS_PANE"
+      name: "&b%shopname%"
+      lore:
+        - "&7Click to edit this shop"

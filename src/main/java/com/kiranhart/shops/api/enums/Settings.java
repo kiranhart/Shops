@@ -13,8 +13,6 @@ public enum Settings {
     USE_DEBUGGER("use-debugger", true),
     USE_UPDATE_CHECKER("use-update-checker", true)
 
-
-
     ;
 
     private String setting;

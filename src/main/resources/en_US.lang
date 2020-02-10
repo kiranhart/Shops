@@ -1,5 +1,12 @@
 prefix = "&8[&bShops&8] &e>>"
-no-permission = "&cYou do not have permission to do that"
+no-permission = "&cYou do not have permission to do that!"
+player-only = "&cOnly players are allowed to do that!"
+
+shop.exists = "&cA shop by the name &b%shopname%&c already exists"
+shop.invalid = "&cNo shop by the nmae of &b%shopname% &cexists"
+shop.created = "&aCreated a shop with the name of &b%shopname%"
 
 cmd.help = "&f/&bshops help"
-cmd.invalid = "&cThat command is not valid"
+cmd.invalid = "&cThat command is not valid!"
+
+cmd.args.create = "&f/&bshops create &d<&cname&d>"

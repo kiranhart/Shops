@@ -1,6 +1,8 @@
-package com.kiranhart.shops;
+package com.kiranhart.shops.api;
 
 import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -35,4 +37,3 @@ public abstract class HartInventory implements InventoryHolder {
         return this;
     }
 }
-

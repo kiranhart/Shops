@@ -1,6 +1,7 @@
 package com.kiranhart.shops.events;
 
-import com.kiranhart.shops.HartInventory;
+import com.kiranhart.shops.api.HartInventory;
+import com.kiranhart.shops.util.Debugger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,26 +12,38 @@ public class HartInventoryListener implements Listener {
 
     @EventHandler
     public void onOpen(InventoryOpenEvent e) {
-        if (e.getInventory().getHolder() instanceof HartInventory) {
-            HartInventory gui = (HartInventory) e.getInventory().getHolder();
-            gui.onOpen(e);
+        try {
+            if (e.getInventory().getHolder() instanceof HartInventory) {
+                HartInventory gui = (HartInventory) e.getInventory().getHolder();
+                gui.onOpen(e);
+            }
+        } catch (Exception ex) {
+            Debugger.report(ex, false);
         }
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (e.getInventory().getHolder() instanceof HartInventory) {
-            HartInventory gui = (HartInventory) e.getInventory().getHolder();
-            gui.onClick(e);
-            gui.onClick(e, e.getRawSlot());
+        try {
+            if (e.getInventory().getHolder() instanceof HartInventory) {
+                HartInventory gui = (HartInventory) e.getInventory().getHolder();
+                gui.onClick(e);
+                gui.onClick(e, e.getRawSlot());
+            }
+        } catch (Exception ex) {
+            Debugger.report(ex, false);
         }
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
-        if (e.getInventory().getHolder() instanceof HartInventory) {
-            HartInventory gui = (HartInventory) e.getInventory().getHolder();
-            gui.onClose(e);
+        try {
+            if (e.getInventory().getHolder() instanceof HartInventory) {
+                HartInventory gui = (HartInventory) e.getInventory().getHolder();
+                gui.onClose(e);
+            }
+        } catch (Exception ex) {
+            Debugger.report(ex, false);
         }
     }
 }

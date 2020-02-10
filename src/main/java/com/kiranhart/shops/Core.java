@@ -3,8 +3,8 @@ package com.kiranhart.shops;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.events.HartInventoryListener;
-import com.kiranhart.shops.util.locale.Locale;
 import com.kiranhart.shops.util.ConfigWrapper;
+import com.kiranhart.shops.util.locale.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +17,7 @@ public final class Core extends JavaPlugin {
     private Locale locale;
 
     private ConfigWrapper settingsFile;
+    private ConfigWrapper shopsFile;
     private CommandManager commandManager;
 
     @Override
@@ -37,6 +38,10 @@ public final class Core extends JavaPlugin {
         // setup the settings file
         this.settingsFile = new ConfigWrapper(this, "", "Settings.yml");
         this.settingsFile.saveConfig();
+
+        // setup the shops file
+        this.shopsFile = new ConfigWrapper(this, "", "Shops.yml");
+        this.shopsFile.saveConfig();
 
         // load the plugin settings
         Settings.setDefaults();
@@ -77,6 +82,13 @@ public final class Core extends JavaPlugin {
      */
     public ConfigWrapper getSettings() {
         return settingsFile;
+    }
+
+    /**
+     * @return the shops file
+     */
+    public ConfigWrapper getShopsFile() {
+        return shopsFile;
     }
 
     /**
