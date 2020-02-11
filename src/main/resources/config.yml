@@ -1,6 +1,19 @@
 lang: "en_US"
 
 guis:
+  shop:
+    use-border: true
+    border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+    close-item:
+      item: "BARRIER"
+      name: "&c&lClose"
+      lore:
+        - "&7Click to close inventory"
+    purchase-item:
+      name: "%material_name%"
+      lore:
+        - "&eSell (x1)&f: &a$%price%"
+        - "&eBuy (x1)&f: &a$%price%"
   edit-list:
     title: "&8Select a shop to edit"
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"

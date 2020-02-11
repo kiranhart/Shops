@@ -4,7 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.enums.DefaultFontInfo;
 import com.kiranhart.shops.shop.Shop;
-import com.kiranhart.shops.util.NBTEditor;
+import com.kiranhart.shops.util.helpers.NBTEditor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;

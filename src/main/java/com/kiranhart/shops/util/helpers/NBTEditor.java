@@ -1,4 +1,4 @@
-package com.kiranhart.shops.util;
+package com.kiranhart.shops.util.helpers;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

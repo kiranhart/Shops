@@ -1,4 +1,4 @@
-package com.kiranhart.shops.util;
+package com.kiranhart.shops.util.helpers;
 /*
     The current file was created by Kiran Hart
     Date: August 02 2019

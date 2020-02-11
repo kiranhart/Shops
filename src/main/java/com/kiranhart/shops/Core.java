@@ -4,7 +4,7 @@ import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.events.HartInventoryListener;
 import com.kiranhart.shops.shop.Shop;
-import com.kiranhart.shops.util.ConfigWrapper;
+import com.kiranhart.shops.util.helpers.ConfigWrapper;
 import com.kiranhart.shops.util.locale.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

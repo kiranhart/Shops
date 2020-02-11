@@ -1,7 +1,7 @@
 package com.kiranhart.shops.shop;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Material;
+import com.kiranhart.shops.util.helpers.NBTEditor;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -85,6 +85,8 @@ public class ShopItem {
      * @return the item stack being used
      */
     public ItemStack getItem() {
+        this.item = NBTEditor.set(item, sellPrice, "ItemSellPrice");
+        this.item = NBTEditor.set(item, buyPrice, "ItemBuyPrice");
         return item;
     }
 
@@ -141,4 +143,5 @@ public class ShopItem {
     public void setBuyPrice(double buyPrice) {
         this.buyPrice = buyPrice;
     }
+
 }
