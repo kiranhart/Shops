@@ -1,6 +1,13 @@
 package com.kiranhart.shops.shop;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.kiranhart.shops.Core;
+import com.kiranhart.shops.api.ShopAPI;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.LinkedList;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * The current file has been created by Kiran Hart
@@ -8,38 +15,89 @@ import java.util.LinkedList;
  * Time Created: 11:38 AM
  * Usage of any code found within this class is prohibited unless given explicit permission otherwise.
  */
-public abstract class Shop {
+public class Shop {
 
-    /**
-     * get the title of the inventory window
-     */
-    protected String title = "Default Title";
+    private String name;
+    private String title;
+    private UUID id;
+    private boolean isPublic;
+    private LinkedList<ShopItem> shopItems;
 
-    /**
-     * get the category of the shop, used to store in config as well
-     */
-    protected String category = "Food";
+    public Shop(String name) {
+        this.name = name;
 
-    /**
-     * a linked list to store shop items as it's better for frequent add/subtraction of elements
-     */
-    protected LinkedList<ShopItem> shopItems = new LinkedList<>();
+        if (ShopAPI.get().doesShopExistsOnFile(this.name)) {
+            this.title = Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".title");
+            this.id = UUID.fromString(Objects.requireNonNull(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".id")));
+            this.isPublic = Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + this.name.toLowerCase() + ".public");
+            if (this.hasItems()) {
+                this.shopItems = loadShopItems();
+            }
+        } else {
+            this.title = "Default Title";
+            this.id = UUID.randomUUID();
+            this.isPublic = false;
+            this.shopItems = new LinkedList<>();
+        }
+    }
 
-    /**
-     * load all of the shop items from the configuration file
-     */
-    abstract void loadShopItems();
+    public boolean hasItems() {
+        ConfigurationSection sec = Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops." + this.name.toLowerCase() + ".items");
+        if (sec == null || sec.getKeys(false).size() == 0) return false;
+        return true;
+    }
 
-    /**
-     * get the shops items
-     *
-     * @return the loaded shop items
-     */
-    abstract LinkedList<ShopItem> getShopItems();
+    public LinkedList<ShopItem> loadShopItems() {
+        LinkedList<ShopItem> list = new LinkedList<>();
+        if (hasItems()) {
+            for (String itemNode : Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops." + this.name.toLowerCase() + ".items").getKeys(false)) {
+                list.add(new ShopItem(
+                        XMaterial.matchXMaterial(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".items." + itemNode + ".material")).get().parseItem(),
+                        Core.getInstance().getShopsFile().getConfig().getDouble("shops." + this.name.toLowerCase() + ".items." + itemNode + ".buy-price"),
+                        Core.getInstance().getShopsFile().getConfig().getDouble("shops." + this.name.toLowerCase() + ".items." + itemNode + ".sell-price")
+                ));
+            }
+        }
+        return list;
+    }
 
+    public String getName() {
+        return this.name;
+    }
 
-    /**
-     * used to save a shop
-     */
-    abstract void save();
+    public String getTitle() {
+        return this.title;
+    }
+
+    public UUID getId() {
+        return this.id;
+    }
+
+    public boolean isPublic() {
+        return this.isPublic;
+    }
+
+    public LinkedList<ShopItem> getShopItems() {
+        return this.shopItems;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void setShopItems(LinkedList<ShopItem> shopItems) {
+        this.shopItems = shopItems;
+    }
 }

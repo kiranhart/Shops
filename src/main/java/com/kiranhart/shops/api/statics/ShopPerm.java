@@ -12,4 +12,6 @@ public class ShopPerm {
     public static final String CMD_ALL = BASE + ".cmds.*";
     public static final String CMD_HELP = BASE + ".cmds.help";
     public static final String CMD_CREATE = BASE + ".cmds.create";
+    public static final String CMD_REMOVE = BASE + ".cmds.remove";
+    public static final String CMD_LIST = BASE + ".cmds.list";
 }

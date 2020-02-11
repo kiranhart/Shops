@@ -17,10 +17,12 @@ public class ShopLang {
     public static final String SHOP_EXISTS = "shop.exists";
     public static final String SHOP_INVALID = "shop.invalid";
     public static final String SHOP_CREATED = "shop.created";
+    public static final String SHOP_REMOVED = "shop.removed";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";
     public static final String COMMAND_HELP = "cmd.help";
 
     public static final String COMMAND_ARGS_CREATE = "cmd.args.create";
+    public static final String COMMAND_ARGS_REMOVE = "cmd.args.remove";
 }

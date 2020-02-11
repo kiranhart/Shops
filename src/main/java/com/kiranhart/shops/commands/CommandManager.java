@@ -1,12 +1,13 @@
 package com.kiranhart.shops.commands;
 
 import com.kiranhart.shops.Core;
-import com.kiranhart.shops.commands.subcommands.CreateCommand;
-import com.kiranhart.shops.commands.subcommands.DefaultCommand;
-import com.kiranhart.shops.commands.subcommands.HelpCommand;
-import com.kiranhart.shops.util.Debugger;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
+import com.kiranhart.shops.commands.subcommands.CreateCommand;
+import com.kiranhart.shops.commands.subcommands.HelpCommand;
+import com.kiranhart.shops.commands.subcommands.ListCommand;
+import com.kiranhart.shops.commands.subcommands.RemoveCommand;
+import com.kiranhart.shops.util.Debugger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,8 +31,9 @@ public class CommandManager implements CommandExecutor {
     public void init() {
         Core.getInstance().getCommand(MAIN).setExecutor(this);
         commands.add(new HelpCommand());
-        commands.add(new DefaultCommand());
         commands.add(new CreateCommand());
+        commands.add(new RemoveCommand());
+        commands.add(new ListCommand());
     }
 
     @Override
@@ -45,7 +47,7 @@ public class CommandManager implements CommandExecutor {
         if (command.getName().equalsIgnoreCase(MAIN)) {
 
             if (args.length == 0) {
-               Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_HELP).sendPrefixedMessage(sender);
+                Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_HELP).sendPrefixedMessage(sender);
                 return true;
             }
 

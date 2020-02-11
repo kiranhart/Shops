@@ -3,12 +3,14 @@ package com.kiranhart.shops;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.events.HartInventoryListener;
+import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.util.ConfigWrapper;
 import com.kiranhart.shops.util.locale.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public final class Core extends JavaPlugin {
 
@@ -19,6 +21,8 @@ public final class Core extends JavaPlugin {
     private ConfigWrapper settingsFile;
     private ConfigWrapper shopsFile;
     private CommandManager commandManager;
+
+    private LinkedList<Shop> shops;
 
     @Override
     public void onLoad() {
@@ -33,7 +37,8 @@ public final class Core extends JavaPlugin {
         // save the default configuration file
         saveDefaultConfig();
 
-        settings = new HashMap<>();
+        this.settings = new HashMap<>();
+        this.shops = new LinkedList<>();
 
         // setup the settings file
         this.settingsFile = new ConfigWrapper(this, "", "Settings.yml");
@@ -96,5 +101,14 @@ public final class Core extends JavaPlugin {
      */
     public HashMap<Settings, Object> getLoadedSetting() {
         return this.settings;
+    }
+
+    /**
+     * Get a collection of shops
+     *
+     * @return shops
+     */
+    public LinkedList<Shop> getShops() {
+        return shops;
     }
 }

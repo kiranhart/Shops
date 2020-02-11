@@ -2,7 +2,7 @@ lang: "en_US"
 
 guis:
   edit-list:
-    title: "&dSelect a shop to edit"
+    title: "&8Select a shop to edit"
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
     close-item:
       item: "BARRIER"

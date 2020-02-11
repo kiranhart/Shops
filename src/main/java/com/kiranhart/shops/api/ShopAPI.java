@@ -3,6 +3,8 @@ package com.kiranhart.shops.api;
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.enums.DefaultFontInfo;
+import com.kiranhart.shops.shop.Shop;
+import com.kiranhart.shops.util.NBTEditor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -156,6 +158,21 @@ public class ShopAPI {
     }
 
     /**
+     * Used to remove a shop from the flat file
+     *
+     * @param name is the name of the shop you're removing
+     */
+    public void removeShop(String name) {
+        // check if the shop exists first
+        if (!doesShopExistsOnFile(name)) {
+            return;
+        }
+
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase(), name);
+        Core.getInstance().getShopsFile().saveConfig();
+    }
+
+    /**
      * Check whether or not the shop has items to sell
      *
      * @param shopName is the shop name your checking
@@ -185,6 +202,12 @@ public class ShopAPI {
         return stack;
     }
 
+    /**
+     * Generate an itemstack for shop icon
+     *
+     * @param shopname is the shop you want to get the icon of
+     * @return an itemstack of the shop icon
+     */
     public ItemStack loadShopNameItemFromConfig(String shopname) {
         ItemStack stack = XMaterial.matchXMaterial(Core.getInstance().getConfig().getString("guis.edit-list.shop-item.item")).get().parseItem();
         ItemMeta meta = stack.getItemMeta();
@@ -193,6 +216,27 @@ public class ShopAPI {
         Core.getInstance().getConfig().getStringList("guis.edit-list.shop-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line)));
         meta.setLore(lore);
         stack.setItemMeta(meta);
+        stack = NBTEditor.set(stack, shopname, "ShopNameByIcon");
         return stack;
+    }
+
+    /**
+     * Get a list of all the shop icons
+     *
+     * @return a list of the shop icon item stacks
+     */
+    public ArrayList<ItemStack> getListOfShopNameItems() {
+        ArrayList<ItemStack> items = new ArrayList<>();
+        this.getAllShopNames().forEach(name -> items.add(this.loadShopNameItemFromConfig(name)));
+        return items;
+    }
+
+    /**
+     * Load all of the shops regardless if they're configured
+     */
+    public void loadAllShops() {
+        if (this.anyShopsExists()) {
+            this.getAllShopNames().forEach(shop -> Core.getInstance().getShops().add(new Shop(shop)));
+        }
     }
 }
