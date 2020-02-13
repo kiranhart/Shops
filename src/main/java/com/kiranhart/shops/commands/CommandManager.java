@@ -32,6 +32,7 @@ public class CommandManager implements CommandExecutor {
         commands.add(new RemoveCommand());
         commands.add(new ListCommand());
         commands.add(new EditCommand());
+        commands.add(new AddItemCommand());
     }
 
     @Override
