@@ -20,13 +20,17 @@ public abstract class HartInventory implements InventoryHolder {
     protected int defaultSize = 54;
     protected int page = 1;
 
-    public void onClick(InventoryClickEvent e) {}
+    public void onClick(InventoryClickEvent e) {
+    }
 
-    public void onClick(InventoryClickEvent e, int slot) {}
+    public void onClick(InventoryClickEvent e, int slot) {
+    }
 
-    public void onOpen(InventoryOpenEvent e) {}
+    public void onOpen(InventoryOpenEvent e) {
+    }
 
-    public void onClose(InventoryCloseEvent e) {}
+    public void onClose(InventoryCloseEvent e) {
+    }
 
     protected HartInventory setPage(int page) {
         if (this.page <= 0) {
@@ -36,4 +40,5 @@ public abstract class HartInventory implements InventoryHolder {
         }
         return this;
     }
+
 }

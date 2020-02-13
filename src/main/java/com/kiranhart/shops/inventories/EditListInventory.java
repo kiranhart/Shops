@@ -11,6 +11,8 @@ import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
+import com.kiranhart.shops.shop.Shop;
+import com.kiranhart.shops.util.helpers.NBTEditor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -38,9 +40,20 @@ public class EditListInventory extends HartInventory {
         e.setCancelled(true);
         Player p = (Player) e.getWhoClicked();
 
+        if (slot == 49) p.closeInventory();
+
         // pagination
         if (this.page >= 1 && slot == 48) p.openInventory(this.setPage(this.page - 1).getInventory());
         if (this.page >= 1 && slot == 50) p.openInventory(this.setPage(this.page + 1).getInventory());
+
+        // check if they clicked a shop icon
+        if (NBTEditor.contains(e.getCurrentItem(), "ShopNameByIcon")) {
+            String shopName = NBTEditor.getString(e.getCurrentItem(), "ShopNameByIcon");
+
+            if (ShopAPI.get().doesShopExistsOnFile(shopName)) {
+                p.openInventory(new EditInventory(shopName).getInventory());
+            }
+        }
     }
 
     @Override

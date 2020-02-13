@@ -1,8 +1,12 @@
 package com.kiranhart.shops.shop;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.kiranhart.shops.Core;
 import com.kiranhart.shops.util.helpers.NBTEditor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 /**
  * The current file has been created by Kiran Hart
@@ -17,16 +21,18 @@ public class ShopItem {
      */
     private String category;
 
-    private ItemStack item;
+    private Material item;
     private double sellPrice;
     private double buyPrice;
+
+    private String id;
 
     /**
      * default constructor, set values to basic
      */
     public ShopItem() {
         this.category = "Default";
-        this.item = XMaterial.PAPER.parseItem();
+        this.item = XMaterial.PAPER.parseMaterial();
         this.sellPrice = 0D;
         this.buyPrice = 0D;
     }
@@ -47,7 +53,7 @@ public class ShopItem {
      * @param sellPrice is the price the item sells for
      * @param buyPrice  is the price the item buys for
      */
-    public ShopItem(ItemStack item, double sellPrice, double buyPrice) {
+    public ShopItem(Material item, double sellPrice, double buyPrice) {
         this.category = "Default";
         this.item = item;
         this.sellPrice = sellPrice;
@@ -62,13 +68,20 @@ public class ShopItem {
      * @param sellPrice is the price the item sells for
      * @param buyPrice  is the price the item buys for
      */
-    public ShopItem(String category, ItemStack item, double sellPrice, double buyPrice) {
+    public ShopItem(String category, Material item, double sellPrice, double buyPrice) {
         this.category = category;
         this.item = item;
         this.sellPrice = sellPrice;
         this.buyPrice = buyPrice;
     }
 
+    public ShopItem(String shopName, String id, Material material, double sellPrice, double buyPrice) {
+        this.category = shopName;
+        this.id = id;
+        this.item = material;
+        this.sellPrice = sellPrice;
+        this.buyPrice = buyPrice;
+    }
 
     /**
      * Get the item category
@@ -82,12 +95,17 @@ public class ShopItem {
     /**
      * Get the literal item stack
      *
-     * @return the item stack being used
+     * @return the item stack being used (type)
      */
+    public Material getMaterial() {
+        return item;
+    }
+
     public ItemStack getItem() {
+        ItemStack stack = XMaterial.matchXMaterial(item).parseItem();
         this.item = NBTEditor.set(item, sellPrice, "ItemSellPrice");
         this.item = NBTEditor.set(item, buyPrice, "ItemBuyPrice");
-        return item;
+        return stack;
     }
 
     /**
@@ -122,7 +140,7 @@ public class ShopItem {
      *
      * @param item is the item stack
      */
-    public void setItem(ItemStack item) {
+    public void setMaterial(Material item) {
         this.item = item;
     }
 

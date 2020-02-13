@@ -3,10 +3,7 @@ package com.kiranhart.shops.commands;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
-import com.kiranhart.shops.commands.subcommands.CreateCommand;
-import com.kiranhart.shops.commands.subcommands.HelpCommand;
-import com.kiranhart.shops.commands.subcommands.ListCommand;
-import com.kiranhart.shops.commands.subcommands.RemoveCommand;
+import com.kiranhart.shops.commands.subcommands.*;
 import com.kiranhart.shops.util.Debugger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,6 +31,7 @@ public class CommandManager implements CommandExecutor {
         commands.add(new CreateCommand());
         commands.add(new RemoveCommand());
         commands.add(new ListCommand());
+        commands.add(new EditCommand());
     }
 
     @Override

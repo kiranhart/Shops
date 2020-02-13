@@ -1,5 +1,6 @@
 package com.kiranhart.shops;
 
+import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.events.HartInventoryListener;
@@ -58,6 +59,8 @@ public final class Core extends JavaPlugin {
 
         // register Hart Inventory
         Bukkit.getPluginManager().registerEvents(new HartInventoryListener(), this);
+
+        ShopAPI.get().loadAllShops();
 
         // commands
         this.commandManager = new CommandManager();

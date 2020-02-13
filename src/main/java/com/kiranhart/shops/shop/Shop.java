@@ -30,9 +30,7 @@ public class Shop {
             this.title = Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".title");
             this.id = UUID.fromString(Objects.requireNonNull(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".id")));
             this.isPublic = Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + this.name.toLowerCase() + ".public");
-            if (this.hasItems()) {
-                this.shopItems = loadShopItems();
-            }
+            this.shopItems = (hasItems()) ? loadShopItems() : new LinkedList<>();
         } else {
             this.title = "Default Title";
             this.id = UUID.randomUUID();
@@ -48,17 +46,7 @@ public class Shop {
     }
 
     public LinkedList<ShopItem> loadShopItems() {
-        LinkedList<ShopItem> list = new LinkedList<>();
-        if (hasItems()) {
-            for (String itemNode : Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops." + this.name.toLowerCase() + ".items").getKeys(false)) {
-                list.add(new ShopItem(
-                        XMaterial.matchXMaterial(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".items." + itemNode + ".material")).get().parseItem(),
-                        Core.getInstance().getShopsFile().getConfig().getDouble("shops." + this.name.toLowerCase() + ".items." + itemNode + ".buy-price"),
-                        Core.getInstance().getShopsFile().getConfig().getDouble("shops." + this.name.toLowerCase() + ".items." + itemNode + ".sell-price")
-                ));
-            }
-        }
-        return list;
+        return ShopAPI.get().getShopItemsFromName(this.name.toLowerCase());
     }
 
     public String getName() {

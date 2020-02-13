@@ -12,6 +12,8 @@ public class ShopLang {
 
     public static final String NO_PERMISSION = "no-permission";
     public static final String PLAYER_ONLY = "player-only";
+    public static final String NOT_A_NUMBER = "not-a-number";
+    public static final String AIR = "air";
 
     // shops
     public static final String SHOP_EXISTS = "shop.exists";
@@ -25,4 +27,6 @@ public class ShopLang {
 
     public static final String COMMAND_ARGS_CREATE = "cmd.args.create";
     public static final String COMMAND_ARGS_REMOVE = "cmd.args.remove";
+    public static final String COMMAND_ARGS_EDIT = "cmd.args.edit";
+    public static final String COMMAND_ARGS_ADDITEM = "cmd.args.additem";
 }

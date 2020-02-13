@@ -1,6 +1,8 @@
 prefix = "&8[&bShops&8] &e>>"
 no-permission = "&cYou do not have permission to do that!"
 player-only = "&cOnly players are allowed to do that!"
+not-a-number = "&cThat is not a number!"
+air = "&cYou're really trying to add air?"
 
 shop.exists = "&cA shop by the name &b%shopname%&c already exists"
 shop.invalid = "&cNo shop by the nmae of &b%shopname% &cexists"
@@ -12,3 +14,5 @@ cmd.invalid = "&cThat command is not valid!"
 
 cmd.args.create = "&f/&bshops create &d<&cname&d>"
 cmd.args.remove = "&f/&bshops remove &d<&cname&d>"
+cmd.args.edit = "&f/&bshops edit &d<&cname&d>"
+cmd.args.additem = "&f/&bshops edit &d<&cshop&d> &d<&csell price&d> &d<&cbuy price&d>"

@@ -1,6 +1,41 @@
 lang: "en_US"
 
 guis:
+  edit-shop:
+    title: "&8Editing Shop: &e%shopname%"
+    border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+    setname:
+      item: "PAPER"
+      name: "&b%shopname%"
+      lore:
+        - "&7Click to change the shop name"
+    edititems:
+      item: "CHEST"
+      name: "&bEdit Items"
+      lore:
+        - "&7Click to edit shop inventory"
+        - "&7(Remove / Sell & Buy Price)"
+    deleteshop:
+      item: "RED_STAINED_GLASS_PANE"
+      name: "&cDelete Shop"
+      lore:
+        - "&7Click to delete the shop"
+        - "&c&l(!) &cCannot be undone"
+    shop-enabled:
+      item: "LIME_WOOL"
+      name: "&B%shopname% &eEnabled"
+      lore:
+        - "&7Click to &cDisable &7this shop"
+    shop-disable:
+      item: "RED_WOOL"
+      name: "&b%shopname% &cDisabled"
+      lore:
+        - "&7Click to &aEnable &7this shop"
+    close-item:
+      item: "BARRIER"
+      name: "&c&lClose"
+      lore:
+        - "&7Click to close inventory"
   shop:
     use-border: true
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"

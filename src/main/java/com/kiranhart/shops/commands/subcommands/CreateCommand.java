@@ -10,6 +10,8 @@ import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
+import com.kiranhart.shops.events.ShopCreateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class CreateCommand extends Subcommand {
@@ -33,8 +35,13 @@ public class CreateCommand extends Subcommand {
                 return;
             }
 
-            ShopAPI.get().createNewShop(args[1]);
-            Core.getInstance().getLocale().getMessage(ShopLang.SHOP_CREATED).processPlaceholder("shopname", args[1]).sendPrefixedMessage(sender);
+            ShopCreateEvent shopCreateEvent = new ShopCreateEvent(sender, args[1]);
+            Bukkit.getPluginManager().callEvent(shopCreateEvent);
+
+            if (!shopCreateEvent.isCancelled()) {
+                ShopAPI.get().createNewShop(args[1]);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_CREATED).processPlaceholder("shopname", args[1]).sendPrefixedMessage(sender);
+            }
         }
     }
 
