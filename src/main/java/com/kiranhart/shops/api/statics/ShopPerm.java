@@ -9,6 +9,7 @@ package com.kiranhart.shops.api.statics;
 public class ShopPerm {
 
     public static final String BASE = "Shops";
+    public static final String ADMIN = BASE + ".admin";
     public static final String CMD_ALL = BASE + ".cmds.*";
     public static final String CMD_HELP = BASE + ".cmds.help";
     public static final String CMD_CREATE = BASE + ".cmds.create";

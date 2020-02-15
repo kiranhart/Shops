@@ -39,6 +39,10 @@ public class Shop {
         }
     }
 
+    public void updateItems() {
+        this.shopItems = loadShopItems();
+    }
+
     public boolean hasItems() {
         ConfigurationSection sec = Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops." + this.name.toLowerCase() + ".items");
         if (sec == null || sec.getKeys(false).size() == 0) return false;

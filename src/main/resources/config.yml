@@ -1,6 +1,42 @@
 lang: "en_US"
 
 guis:
+  purchase-inventory:
+    title: "&8Purchase / Sell"
+    border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+    increment:
+      item: "LIME_STAINED_GLASS_PANE"
+      name: "&a&l+ %amount%"
+      lore:
+        - "&7Click to increment total"
+    decrement:
+      item: "RED_STAINED_GLASS_PANE"
+      name: "&c&l- %amount%"
+      lore:
+        - "&7Click to decrement total"
+    selltotal:
+      item: "ORANGE_STAINED_GLASS_PANE"
+      name: "&a&lSell %amount%"
+      lore:
+        - "&7Click to sell total"
+    sellall:
+      item: "YELLOW_STAINED_GLASS_PANE"
+      name: "&a&lSell All"
+      lore:
+        - "&7Click to sell all"
+    iteminfo:
+      item: "SUNFLOWER"
+      name: "&b&lTotal&f: &e%amount%"
+      lore:
+        - "&eBuy Total&f: &a$%buy_total%"
+        - "&eSell Total&f: &a$%sell_total%"
+        - ""
+        - "&e(Left-Click) to Purchase"
+    close-item:
+      item: "BARRIER"
+      name: "&c&lClose"
+      lore:
+        - "&7Click to close inventory"
   edit-shop:
     title: "&8Editing Shop: &e%shopname%"
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
@@ -37,18 +73,18 @@ guis:
       lore:
         - "&7Click to close inventory"
   shop:
-    use-border: true
-    border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
     close-item:
       item: "BARRIER"
       name: "&c&lClose"
       lore:
         - "&7Click to close inventory"
     purchase-item:
-      name: "%material_name%"
+      #the custom name will only activate if the item doesn't already have a custom name.
+      name: "&e%material_name%"
       lore:
-        - "&eSell (x1)&f: &a$%price%"
-        - "&eBuy (x1)&f: &a$%price%"
+        - ""
+        - "&eSell (x1)&f: &a$%sell_price%"
+        - "&eBuy (x1)&f: &a$%buy_price%"
   edit-list:
     title: "&8Select a shop to edit"
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"

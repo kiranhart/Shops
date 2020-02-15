@@ -20,6 +20,7 @@ public class ShopLang {
     public static final String SHOP_INVALID = "shop.invalid";
     public static final String SHOP_CREATED = "shop.created";
     public static final String SHOP_REMOVED = "shop.removed";
+    public static final String SHOP_PRIVATE = "shop.private";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";

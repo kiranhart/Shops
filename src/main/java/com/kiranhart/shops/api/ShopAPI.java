@@ -14,10 +14,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * The current file has been created by Kiran Hart
@@ -57,6 +61,9 @@ public class ShopAPI {
      * @return whether or not they have permissions to any of the param perms
      */
     public boolean hasPerm(CommandSender sender, String... perms) {
+
+        if (sender.isOp()) return true;
+
         for (String s : perms) {
             if (sender.hasPermission(s)) {
                 return true;
@@ -155,9 +162,6 @@ public class ShopAPI {
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".title", name);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".id", UUID.randomUUID().toString());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
-        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".items.1.material", "CAKE");
-        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".items.1.buy-price", 20D);
-        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".items.1.sell-price", 10D);
         Core.getInstance().getShopsFile().saveConfig();
     }
 
@@ -291,10 +295,10 @@ public class ShopAPI {
      * @param sell     is the price the item sells for
      * @param buy      is the price for x1 of the item
      */
-    public void addShopItem(String shopName, Material material, double sell, double buy) {
+    public void addShopItem(String shopName, ItemStack material, double sell, double buy) {
         if (doesShopExistsOnFile(shopName)) {
             String unique = UUID.randomUUID().toString() + System.currentTimeMillis();
-            Core.getInstance().getShopsFile().getConfig().set("shops." + shopName.toLowerCase() + ".items." + unique + ".material", material.name());
+            Core.getInstance().getShopsFile().getConfig().set("shops." + shopName.toLowerCase() + ".items." + unique + ".material", material);
             Core.getInstance().getShopsFile().getConfig().set("shops." + shopName.toLowerCase() + ".items." + unique + ".sell-price", sell);
             Core.getInstance().getShopsFile().getConfig().set("shops." + shopName.toLowerCase() + ".items." + unique + ".buy-price", buy);
             Core.getInstance().getShopsFile().saveConfig();
@@ -346,7 +350,7 @@ public class ShopAPI {
     /**
      * set the item in the player hand depending on server version
      *
-     * @param p is the player
+     * @param p    is the player
      * @param item is the itemstack you're setting the hand to
      */
     public void setItemInHand(Player p, ItemStack item) {
@@ -357,15 +361,45 @@ public class ShopAPI {
         }
     }
 
+    /**
+     * Get all shop items by shop name
+     *
+     * @param shopName the shop name you want items from
+     * @return all the shop items if any from shop.
+     */
     public LinkedList<ShopItem> getShopItemsFromName(String shopName) {
         LinkedList<ShopItem> items = new LinkedList<>();
         Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops." + shopName.toLowerCase() + ".items").getKeys(false).forEach(itemNode -> {
-            Material material = XMaterial.matchXMaterial(Core.getInstance().getShopsFile().getConfig().getString("shops." + shopName.toLowerCase() + ".items." + itemNode + ".material")).get().parseMaterial();
             double buy = Core.getInstance().getShopsFile().getConfig().getDouble("shops." + shopName.toLowerCase() + ".items." + itemNode + ".buy-price");
             double sell = Core.getInstance().getShopsFile().getConfig().getDouble("shops." + shopName.toLowerCase() + ".items." + itemNode + ".sell-price");
-            items.add(new ShopItem(shopName, itemNode, material, buy, buy));
+            items.add(new ShopItem(shopName, itemNode, Core.getInstance().getShopsFile().getConfig().getItemStack("shops." + shopName.toLowerCase() + ".items." + itemNode + ".material"), sell, buy));
         });
         return items;
     }
 
+    /**
+     * create the purchase inventory items
+     *
+     * @param item   is the item from the gui you want to create
+     * @param amount is the amount total
+     * @param sell   is the sell price
+     * @param buy    is the buy price
+     * @return
+     */
+    public ItemStack createPurchaseInventoryItem(String item, int amount, double sell, double buy) {
+        ItemStack stack = XMaterial.matchXMaterial(Core.getInstance().getConfig().getString("guis.purchase-inventory." + item + ".item")).get().parseItem();
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.purchase-inventory." + item + ".name").replace("%amount%", String.valueOf(amount))));
+        List<String> lore = new ArrayList<>();
+        Core.getInstance().getConfig().getStringList("guis.purchase-inventory." + item + ".lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%sell_total%", String.valueOf(sell)).replace("%buy_total%", String.valueOf(buy)))));
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+        return stack;
+    }
+
+    public void performPurchase(Player p, ShopItem shopItem, int total) {
+        for (int i = 0; i < total; i++) {
+            p.getInventory().addItem(shopItem.getMaterial());
+        }
+    }
 }

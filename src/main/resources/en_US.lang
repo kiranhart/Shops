@@ -8,6 +8,7 @@ shop.exists = "&cA shop by the name &b%shopname%&c already exists"
 shop.invalid = "&cNo shop by the nmae of &b%shopname% &cexists"
 shop.created = "&aCreated a shop with the name of &b%shopname%"
 shop.removed = "&aRemoved the shop with the name of &b%shopname%"
+shop.private = "&cYou cannot purchase items from a private shop!"
 
 cmd.help = "&f/&bshops help"
 cmd.invalid = "&cThat command is not valid!"

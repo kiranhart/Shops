@@ -3,10 +3,13 @@ package com.kiranhart.shops.shop;
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.util.helpers.NBTEditor;
-import org.bukkit.Material;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.UUID;
+import java.util.ArrayList;
 
 /**
  * The current file has been created by Kiran Hart
@@ -21,7 +24,7 @@ public class ShopItem {
      */
     private String category;
 
-    private Material item;
+    private ItemStack item;
     private double sellPrice;
     private double buyPrice;
 
@@ -32,50 +35,12 @@ public class ShopItem {
      */
     public ShopItem() {
         this.category = "Default";
-        this.item = XMaterial.PAPER.parseMaterial();
+        this.item = XMaterial.PAPER.parseItem();
         this.sellPrice = 0D;
         this.buyPrice = 0D;
     }
 
-    /**
-     * used to get a shop item from a category
-     *
-     * @param category is the the category of the item
-     */
-    public ShopItem(String category) {
-        this.category = category;
-    }
-
-    /**
-     * used to get a shop item from item and price
-     *
-     * @param item      is the literal item stack
-     * @param sellPrice is the price the item sells for
-     * @param buyPrice  is the price the item buys for
-     */
-    public ShopItem(Material item, double sellPrice, double buyPrice) {
-        this.category = "Default";
-        this.item = item;
-        this.sellPrice = sellPrice;
-        this.buyPrice = buyPrice;
-    }
-
-    /**
-     * used to get a shop item from item and price and category
-     *
-     * @param category  is the the category of the item
-     * @param item      is the literal item stack
-     * @param sellPrice is the price the item sells for
-     * @param buyPrice  is the price the item buys for
-     */
-    public ShopItem(String category, Material item, double sellPrice, double buyPrice) {
-        this.category = category;
-        this.item = item;
-        this.sellPrice = sellPrice;
-        this.buyPrice = buyPrice;
-    }
-
-    public ShopItem(String shopName, String id, Material material, double sellPrice, double buyPrice) {
+    public ShopItem(String shopName, String id, ItemStack material, double sellPrice, double buyPrice) {
         this.category = shopName;
         this.id = id;
         this.item = material;
@@ -97,14 +62,24 @@ public class ShopItem {
      *
      * @return the item stack being used (type)
      */
-    public Material getMaterial() {
+    public ItemStack getMaterial() {
         return item;
     }
 
     public ItemStack getItem() {
-        ItemStack stack = XMaterial.matchXMaterial(item).parseItem();
-        this.item = NBTEditor.set(item, sellPrice, "ItemSellPrice");
-        this.item = NBTEditor.set(item, buyPrice, "ItemBuyPrice");
+        ItemStack stack = item.clone();
+        ItemMeta meta = stack.getItemMeta();
+        if (!meta.hasDisplayName()) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
+        }
+        ArrayList<String> lore = new ArrayList<>();
+        Core.getInstance().getConfig().getStringList("guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", String.valueOf(buyPrice)).replace("%sell_price%", String.valueOf(sellPrice)))));
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+
+        stack = NBTEditor.set(stack, sellPrice, "ItemSellPrice");
+        stack = NBTEditor.set(stack, buyPrice, "ItemBuyPrice");
+        stack = NBTEditor.set(stack, id, "ShopItemID");
         return stack;
     }
 
@@ -140,7 +115,7 @@ public class ShopItem {
      *
      * @param item is the item stack
      */
-    public void setMaterial(Material item) {
+    public void setMaterial(ItemStack item) {
         this.item = item;
     }
 
@@ -162,4 +137,7 @@ public class ShopItem {
         this.buyPrice = buyPrice;
     }
 
+    public String getId() {
+        return id;
+    }
 }

@@ -11,8 +11,17 @@ import com.kiranhart.shops.Core;
 public enum Settings {
 
     USE_DEBUGGER("use-debugger", true),
-    USE_UPDATE_CHECKER("use-update-checker", true)
+    USE_UPDATE_CHECKER("use-update-checker", true),
 
+    DYNAMIC_SHOP_SIZE("dynamic-shop-size", true),
+    ALLOW_PURCHASE_FROM_PRIVATE_SHOP("allow-purchase-from-private-shop", false),
+    ALLOW_ADMIN_PURCHASE_OVERRIDE("allow-admin-purchase-override", true),
+
+    INCREMENT_FIRST("increment-first", 1),
+    INCREMENT_SECOND("increment-second", 5),
+
+    DECREMENT_FIRST("decrement-first", 1),
+    DECREMENT_SECOND("decrement-second", 5),
     ;
 
     private String setting;

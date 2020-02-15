@@ -82,7 +82,8 @@ public class AddItemCommand extends Subcommand {
                 return;
             }
 
-            ShopAPI.get().addShopItem(args[1].toLowerCase(), XMaterial.matchXMaterial(ShopAPI.get().getItemInHand(p)).parseMaterial(), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
+            ShopAPI.get().addShopItem(args[1].toLowerCase(), ShopAPI.get().getItemInHand(p), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
+            Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(args[1])).findFirst().get().updateItems();
         }
     }
 
