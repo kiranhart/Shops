@@ -4,10 +4,12 @@ import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.subcommands.*;
+import com.kiranhart.shops.inventories.SelectShopInventory;
 import com.kiranhart.shops.util.Debugger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +49,12 @@ public class CommandManager implements CommandExecutor {
         if (command.getName().equalsIgnoreCase(MAIN)) {
 
             if (args.length == 0) {
-                Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_HELP).sendPrefixedMessage(sender);
+                if (sender instanceof Player) {
+                    Player p = (Player) sender;
+                    p.openInventory(new SelectShopInventory().getInventory());
+                } else {
+                    Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_HELP).sendPrefixedMessage(sender);
+                }
                 return true;
             }
 

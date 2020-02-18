@@ -14,6 +14,7 @@ public enum Settings {
     USE_UPDATE_CHECKER("use-update-checker", true),
 
     DYNAMIC_SHOP_SIZE("dynamic-shop-size", true),
+    SHOW_PRIVATE_SHOP_IN_SELECT("show-private-shop-in-select", false),
     ALLOW_PURCHASE_FROM_PRIVATE_SHOP("allow-purchase-from-private-shop", false),
     ALLOW_ADMIN_PURCHASE_OVERRIDE("allow-admin-purchase-override", true),
 

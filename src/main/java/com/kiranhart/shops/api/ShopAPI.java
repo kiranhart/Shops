@@ -161,6 +161,7 @@ public class ShopAPI {
         // create the with the default settings
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".title", name);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".id", UUID.randomUUID().toString());
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseMaterial().name());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
         Core.getInstance().getShopsFile().saveConfig();
     }

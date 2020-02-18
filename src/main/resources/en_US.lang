@@ -15,5 +15,6 @@ cmd.invalid = "&cThat command is not valid!"
 
 cmd.args.create = "&f/&bshops create &d<&cname&d>"
 cmd.args.remove = "&f/&bshops remove &d<&cname&d>"
+cmd.args.open = "&f/&bshops open &d<&cname&d>"
 cmd.args.edit = "&f/&bshops edit &d<&cname&d>"
 cmd.args.additem = "&f/&bshops edit &d<&cshop&d> &d<&csell price&d> &d<&cbuy price&d>"

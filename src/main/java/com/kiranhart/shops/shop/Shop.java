@@ -3,8 +3,13 @@ package com.kiranhart.shops.shop;
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
+import com.kiranhart.shops.util.helpers.NBTEditor;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.UUID;
@@ -71,6 +76,18 @@ public class Shop {
 
     public LinkedList<ShopItem> getShopItems() {
         return this.shopItems;
+    }
+
+    public ItemStack getIcon() {
+        ItemStack stack = XMaterial.matchXMaterial(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".icon")).get().parseItem();
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.allshops.shop-icon.name").replace("%shop_name%", this.name).replace("%shop_title%", ShopAPI.get().getShopTitleByName(this.name))));
+        ArrayList<String> lore = new ArrayList<>();
+        Core.getInstance().getConfig().getStringList("guis.allshops.shop-icon.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line)));
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+        stack = NBTEditor.set(stack, this.name, "ShopNameByIcon");
+        return stack;
     }
 
     public void setName(String name) {

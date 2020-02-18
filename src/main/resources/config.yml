@@ -1,6 +1,12 @@
 lang: "en_US"
 
 guis:
+  allshops:
+    title: "&8Select a Shop"
+    shop-icon:
+      name: "%shop_title%" # you can also use %shop_name% but it will use the name that was used when creating it. Title is styled
+      lore:
+        - "&7Click to access shop"
   purchase-inventory:
     title: "&8Purchase / Sell"
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"

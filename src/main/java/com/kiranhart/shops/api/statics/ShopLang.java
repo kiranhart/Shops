@@ -28,6 +28,7 @@ public class ShopLang {
 
     public static final String COMMAND_ARGS_CREATE = "cmd.args.create";
     public static final String COMMAND_ARGS_REMOVE = "cmd.args.remove";
+    public static final String COMMAND_ARGS_OPEN = "cmd.args.open";
     public static final String COMMAND_ARGS_EDIT = "cmd.args.edit";
     public static final String COMMAND_ARGS_ADDITEM = "cmd.args.additem";
 }

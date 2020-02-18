@@ -29,7 +29,7 @@ public class OpenCommand extends Subcommand {
         Player p = (Player) sender;
 
         if (args.length == 1) {
-            Core.getInstance().getShops().forEach(shop -> Bukkit.broadcastMessage(shop.getName()));
+            Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_ARGS_OPEN).sendPrefixedMessage(p);
             return;
         }
 
