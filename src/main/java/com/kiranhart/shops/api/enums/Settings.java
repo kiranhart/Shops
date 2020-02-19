@@ -17,6 +17,7 @@ public enum Settings {
     SHOW_PRIVATE_SHOP_IN_SELECT("show-private-shop-in-select", false),
     ALLOW_PURCHASE_FROM_PRIVATE_SHOP("allow-purchase-from-private-shop", false),
     ALLOW_ADMIN_PURCHASE_OVERRIDE("allow-admin-purchase-override", true),
+    SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY("save-transaction-to-file-right-away", true),
 
     INCREMENT_FIRST("increment-first", 1),
     INCREMENT_SECOND("increment-second", 5),

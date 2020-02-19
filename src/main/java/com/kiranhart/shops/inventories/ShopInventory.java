@@ -55,19 +55,19 @@ public class ShopInventory extends HartInventory {
         if (this.shop.isPublic()) {
             ShopItem clickedItem = this.extractShopItem(e.getCurrentItem());
             if (clickedItem != null) {
-                p.openInventory(new PurchaseInventory(clickedItem, 1).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, clickedItem, 1).getInventory());
             }
         } else {
             if ((boolean) SettingsManager.get(Settings.ALLOW_PURCHASE_FROM_PRIVATE_SHOP)) {
                 ShopItem clickedItem = this.extractShopItem(e.getCurrentItem());
                 if (clickedItem != null) {
-                    p.openInventory(new PurchaseInventory(clickedItem, 1).getInventory());
+                    p.openInventory(new PurchaseInventory(this.shop, clickedItem, 1).getInventory());
                 }
             } else {
                 if ((boolean) SettingsManager.get(Settings.ALLOW_ADMIN_PURCHASE_OVERRIDE) && ShopAPI.get().hasPerm(p, ShopPerm.ADMIN)) {
                     ShopItem clickedItem = this.extractShopItem(e.getCurrentItem());
                     if (clickedItem != null) {
-                        p.openInventory(new PurchaseInventory(clickedItem, 1).getInventory());
+                        p.openInventory(new PurchaseInventory(this.shop, clickedItem, 1).getInventory());
                     }
                 } else {
                     Core.getInstance().getLocale().getMessage(ShopLang.SHOP_PRIVATE).sendPrefixedMessage(p);

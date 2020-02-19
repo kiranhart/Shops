@@ -5,6 +5,7 @@ import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.enums.DefaultFontInfo;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.ShopItem;
+import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.helpers.NBTEditor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,7 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -398,9 +401,82 @@ public class ShopAPI {
         return stack;
     }
 
+    /**
+     * Used to perform the purchase for a player
+     *
+     * @param p is the player you want to add the item to
+     * @param shopItem is the shop item
+     * @param total is the total amount of items
+     */
     public void performPurchase(Player p, ShopItem shopItem, int total) {
         for (int i = 0; i < total; i++) {
             p.getInventory().addItem(shopItem.getMaterial());
+        }
+    }
+
+    /**
+     * Used to save a transaction to the transaction.yml file
+     *
+     * @param transactions is an array of transactions you want to save
+     */
+    public void saveTransactions(Transaction... transactions) {
+        for (Transaction transaction : transactions) {
+            String node = "transactions." + transaction.getId().toString() + transaction.getCurrentMillis() + ".";
+            Core.getInstance().getTransactionFile().getConfig().set(node + "id", transaction.getId().toString());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "time", transaction.getCurrentMillis());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "buyer", transaction.getBuyer().toString());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "type", transaction.getTransactionType().getType());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "shop-name", transaction.getShop().getName());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "shop-id", transaction.getShop().getId().toString());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "item", transaction.getShopItem().getMaterial());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "buy-price", transaction.getShopItem().getBuyPrice());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "sell-price", transaction.getShopItem().getSellPrice());
+            Core.getInstance().getTransactionFile().getConfig().set(node + "quantity", transaction.getQuantity());
+        }
+        Core.getInstance().getTransactionFile().saveConfig();
+    }
+
+    /**
+     * Get the total amount of items in a player inventory
+     *
+     * @param player the player you want to check
+     * @param stack the stack you're searching for
+     * @return the total amount of items found
+     */
+    public int getAmountOfItems(Player player, ItemStack stack) {
+        if (stack == null) return 0;
+        int amount = 0;
+        for (int i = 0; i < player.getInventory().getSize(); i++) {
+            ItemStack slot = player.getInventory().getItem(i);
+            if (slot == null || !slot.isSimilar(stack)) continue;
+            amount += slot.getAmount();
+        }
+        return amount;
+    }
+
+    /**
+     * Remove a specific amount of items from an inventory
+     *
+     * @param inventory is the inventory you're removing from
+     * @param stack is the stack you're targeting
+     * @param amount is the amount you wish to remove
+     */
+    public void removeItemsFromPlayer(Inventory inventory, ItemStack stack, int amount) {
+        if (amount <= 0) return;
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack slot = inventory.getItem(i);
+            if (slot == null) continue;
+            if (stack.isSimilar(slot)) {
+                int newAmount = slot.getAmount() - amount;
+                if (newAmount > 0) {
+                    slot.setAmount(newAmount);
+                    break;
+                } else {
+                    inventory.clear(i);
+                    amount = -newAmount;
+                    if (amount == 0) break;
+                }
+            }
         }
     }
 }

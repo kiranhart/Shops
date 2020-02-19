@@ -24,7 +24,7 @@ public class CreateCommand extends Subcommand {
             return;
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_ARGS_CREATE).sendPrefixedMessage(sender);
             return;
         }

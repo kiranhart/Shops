@@ -1,8 +1,28 @@
 lang: "en_US"
 
+discord:
+  webhook: ""
+  avatarUrl: ""
+  username: ""
+
 guis:
   allshops:
     title: "&8Select a Shop"
+    close-item:
+      item: "BARRIER"
+      name: "&C&LClose"
+      lore:
+        - "&7Click to close inventory"
+    previous-page:
+      item: "ARROW"
+      name: "&e&l<<"
+      lore:
+        - "&7Click to go back a page"
+    next-page:
+      item: "ARROW"
+      name: "&e&l>>"
+      lore:
+        - "&7Click to go to next page"
     shop-icon:
       name: "%shop_title%" # you can also use %shop_name% but it will use the name that was used when creating it. Title is styled
       lore:

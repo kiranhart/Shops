@@ -5,6 +5,8 @@ import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
+import com.kiranhart.shops.events.ShopRemoveEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -34,8 +36,13 @@ public class RemoveCommand extends Subcommand {
                 return;
             }
 
-            ShopAPI.get().removeShop(args[1]);
-            Core.getInstance().getLocale().getMessage(ShopLang.SHOP_REMOVED).processPlaceholder("shopname", args[1]).sendPrefixedMessage(sender);
+            ShopRemoveEvent removeEvent = new ShopRemoveEvent(sender, args[1]);
+            Bukkit.getPluginManager().callEvent(removeEvent);
+
+            if (!removeEvent.isCancelled()) {
+                ShopAPI.get().removeShop(args[1]);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_REMOVED).processPlaceholder("shopname", args[1]).sendPrefixedMessage(sender);
+            }
         }
     }
 

@@ -4,11 +4,16 @@ player-only = "&cOnly players are allowed to do that!"
 not-a-number = "&cThat is not a number!"
 air = "&cYou're really trying to add air?"
 
+money.add = "&a&l+ $%amount%"
+money.remove = "&c&l- $%amount%"
+
 shop.exists = "&cA shop by the name &b%shopname%&c already exists"
 shop.invalid = "&cNo shop by the nmae of &b%shopname% &cexists"
 shop.created = "&aCreated a shop with the name of &b%shopname%"
 shop.removed = "&aRemoved the shop with the name of &b%shopname%"
 shop.private = "&cYou cannot purchase items from a private shop!"
+shop.sold = "&aYou sold a total of &b%total% &aitems"
+shop.bought = "&aYou bought a total of &b%total% &aitems"
 
 cmd.help = "&f/&bshops help"
 cmd.invalid = "&cThat command is not valid!"

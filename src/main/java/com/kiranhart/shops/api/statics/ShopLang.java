@@ -15,12 +15,18 @@ public class ShopLang {
     public static final String NOT_A_NUMBER = "not-a-number";
     public static final String AIR = "air";
 
+    // money
+    public static final String MONEY_ADD = "money.add";
+    public static final String MONEY_REMOVE = "money.remove";
+
     // shops
     public static final String SHOP_EXISTS = "shop.exists";
     public static final String SHOP_INVALID = "shop.invalid";
     public static final String SHOP_CREATED = "shop.created";
     public static final String SHOP_REMOVED = "shop.removed";
     public static final String SHOP_PRIVATE = "shop.private";
+    public static final String SHOP_SOLD = "shop.sold";
+    public static final String SHOP_BOUGHT = "shop.bought";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";

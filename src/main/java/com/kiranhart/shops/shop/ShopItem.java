@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
@@ -73,7 +74,7 @@ public class ShopItem {
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
         }
         ArrayList<String> lore = new ArrayList<>();
-        Core.getInstance().getConfig().getStringList("guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", String.valueOf(buyPrice)).replace("%sell_price%", String.valueOf(sellPrice)))));
+        Core.getInstance().getConfig().getStringList("guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
         meta.setLore(lore);
         stack.setItemMeta(meta);
 

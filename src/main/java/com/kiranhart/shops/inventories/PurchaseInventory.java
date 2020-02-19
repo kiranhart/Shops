@@ -6,7 +6,11 @@ import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
 import com.kiranhart.shops.api.enums.Settings;
+import com.kiranhart.shops.api.statics.ShopLang;
+import com.kiranhart.shops.events.ShopItemPurchaseEvent;
+import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.ShopItem;
+import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,10 +27,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class PurchaseInventory extends HartInventory {
 
+    private Shop shop;
     private ShopItem shopItem;
     private int total;
 
-    public PurchaseInventory(ShopItem shopItem, int total) {
+    public PurchaseInventory(Shop shop, ShopItem shopItem, int total) {
+        this.shop = shop;
         this.shopItem = shopItem;
         this.total = (total <= 0) ? 1 : total;
         this.defaultTitle = ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.purchase-inventory.title"));
@@ -40,21 +46,57 @@ public class PurchaseInventory extends HartInventory {
 
         switch (slot) {
             case 20:
-                p.openInventory(new PurchaseInventory(this.shopItem, this.total + 1).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 1).getInventory());
                 break;
             case 29:
-                p.openInventory(new PurchaseInventory(this.shopItem, this.total + 5).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 5).getInventory());
                 break;
             case 24:
-                p.openInventory(new PurchaseInventory(this.shopItem, this.total - 1).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 1).getInventory());
                 break;
             case 33:
-                p.openInventory(new PurchaseInventory(this.shopItem, this.total - 5).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 5).getInventory());
+                break;
+            case 30:
+                if (ShopAPI.get().getAmountOfItems(p, this.shopItem.getItem()) <= 0) {
+                    return;
+                }
+
+                int amount = ShopAPI.get().getAmountOfItems(p, this.shopItem.getItem());
+                ShopAPI.get().removeItemsFromPlayer(p.getInventory(), shopItem.getItem(), amount);
+                p.updateInventory();
+
+                Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
+
+                Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * amount).sendPrefixedMessage(p);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", this.total).sendPrefixedMessage(p);
                 break;
             case 31:
                 if (Core.getInstance().getEconomy().getBalance(p) >= shopItem.getBuyPrice() * this.total) {
-                    Core.getInstance().getEconomy().withdrawPlayer(p, shopItem.getBuyPrice() * this.total);
-                    ShopAPI.get().performPurchase(p, shopItem, total);
+
+                    ShopItemPurchaseEvent purchaseEvent = new ShopItemPurchaseEvent(p, this.shopItem);
+                    Bukkit.getPluginManager().callEvent(purchaseEvent);
+                    if (!purchaseEvent.isCancelled()) {
+
+                        Core.getInstance().getEconomy().withdrawPlayer(p, shopItem.getBuyPrice() * this.total);
+                        ShopAPI.get().performPurchase(p, shopItem, total);
+                        Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", shopItem.getBuyPrice() * this.total).sendPrefixedMessage(p);
+                        Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
+
+                        // save transaction depending on settings
+                        Transaction transaction = new Transaction(
+                                this.shop,
+                                this.shopItem,
+                                p.getUniqueId(),
+                                this.total,
+                                Transaction.TransactionType.BOUGHT);
+
+                        if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                            ShopAPI.get().saveTransactions(transaction);
+                        } else {
+                            Core.getInstance().getTransactions().add(transaction);
+                        }
+                    }
                 }
                 break;
             case 49:
@@ -74,20 +116,20 @@ public class PurchaseInventory extends HartInventory {
         inventory.setItem(13, shopItem.getMaterial());
 
         //increment items
-        inventory.setItem(20, ShopAPI.get().createPurchaseInventoryItem("increment", (int) SettingsManager.get(Settings.INCREMENT_FIRST),0,0));
-        inventory.setItem(29, ShopAPI.get().createPurchaseInventoryItem("increment", (int) SettingsManager.get(Settings.INCREMENT_SECOND),0,0));
+        inventory.setItem(20, ShopAPI.get().createPurchaseInventoryItem("increment", (int) SettingsManager.get(Settings.INCREMENT_FIRST), 0, 0));
+        inventory.setItem(29, ShopAPI.get().createPurchaseInventoryItem("increment", (int) SettingsManager.get(Settings.INCREMENT_SECOND), 0, 0));
 
         //decrement items
-        inventory.setItem(24, ShopAPI.get().createPurchaseInventoryItem("decrement", (int) SettingsManager.get(Settings.DECREMENT_FIRST),0,0));
-        inventory.setItem(33, ShopAPI.get().createPurchaseInventoryItem("decrement", (int) SettingsManager.get(Settings.DECREMENT_SECOND),0,0));
+        inventory.setItem(24, ShopAPI.get().createPurchaseInventoryItem("decrement", (int) SettingsManager.get(Settings.DECREMENT_FIRST), 0, 0));
+        inventory.setItem(33, ShopAPI.get().createPurchaseInventoryItem("decrement", (int) SettingsManager.get(Settings.DECREMENT_SECOND), 0, 0));
 
         //sell
-        inventory.setItem(30, ShopAPI.get().createPurchaseInventoryItem("sellall", 0,0,0));
-        inventory.setItem(31, ShopAPI.get().createPurchaseInventoryItem("iteminfo", this.total,shopItem.getSellPrice() * this.total,shopItem.getBuyPrice() * this.total));
-        inventory.setItem(32, ShopAPI.get().createPurchaseInventoryItem("selltotal", this.total,0,0));
+        inventory.setItem(30, ShopAPI.get().createPurchaseInventoryItem("sellall", 0, 0, 0));
+        inventory.setItem(31, ShopAPI.get().createPurchaseInventoryItem("iteminfo", this.total, shopItem.getSellPrice() * this.total, shopItem.getBuyPrice() * this.total));
+        inventory.setItem(32, ShopAPI.get().createPurchaseInventoryItem("selltotal", this.total, 0, 0));
 
         // close item
-        inventory.setItem(49, ShopAPI.get().createPurchaseInventoryItem("close-item", 0 ,0,0));
+        inventory.setItem(49, ShopAPI.get().createPurchaseInventoryItem("close-item", 0, 0, 0));
         return inventory;
     }
 }

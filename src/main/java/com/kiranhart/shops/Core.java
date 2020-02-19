@@ -5,6 +5,7 @@ import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.events.HartInventoryListener;
 import com.kiranhart.shops.shop.Shop;
+import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.helpers.ConfigWrapper;
 import com.kiranhart.shops.util.locale.Locale;
 import net.milkbowl.vault.economy.Economy;
@@ -25,9 +26,12 @@ public final class Core extends JavaPlugin {
 
     private ConfigWrapper settingsFile;
     private ConfigWrapper shopsFile;
+    private ConfigWrapper transactionFile;
+
     private CommandManager commandManager;
 
     private LinkedList<Shop> shops;
+    private LinkedList<Transaction> transactions;
 
     @Override
     public void onLoad() {
@@ -37,7 +41,7 @@ public final class Core extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        if (!setupEconomy() ) {
+        if (!setupEconomy()) {
             Bukkit.getConsoleSender().sendMessage(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -50,6 +54,7 @@ public final class Core extends JavaPlugin {
 
         this.settings = new HashMap<>();
         this.shops = new LinkedList<>();
+        this.transactions = new LinkedList<>();
 
         // setup the settings file
         this.settingsFile = new ConfigWrapper(this, "", "Settings.yml");
@@ -58,6 +63,10 @@ public final class Core extends JavaPlugin {
         // setup the shops file
         this.shopsFile = new ConfigWrapper(this, "", "Shops.yml");
         this.shopsFile.saveConfig();
+
+        // setup transactions file
+        this.transactionFile = new ConfigWrapper(this, "", "Transactions.yml");
+        this.transactionFile.saveConfig();
 
         // load the plugin settings
         Settings.setDefaults();
@@ -79,6 +88,8 @@ public final class Core extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        //save any stored transactions
+        transactions.forEach(transaction -> ShopAPI.get().saveTransactions(transaction));
     }
 
     private boolean setupEconomy() {
@@ -122,6 +133,13 @@ public final class Core extends JavaPlugin {
     }
 
     /**
+     * @return the transactions file
+     */
+    public ConfigWrapper getTransactionFile() {
+        return transactionFile;
+    }
+
+    /**
      * @return a hashmap of loaded settings
      */
     public HashMap<Settings, Object> getLoadedSetting() {
@@ -135,6 +153,16 @@ public final class Core extends JavaPlugin {
      */
     public LinkedList<Shop> getShops() {
         return shops;
+    }
+
+    /**
+     * Get a collection of transactions (will be empty if save right away is true)
+     *
+     * @return a list containing all the transactions since the plugin was enabled
+     * this will also save empty if auto save is on, as it save each of them.
+     */
+    public LinkedList<Transaction> getTransactions() {
+        return transactions;
     }
 
     /**
