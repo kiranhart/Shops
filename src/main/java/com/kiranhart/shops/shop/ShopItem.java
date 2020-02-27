@@ -84,6 +84,24 @@ public class ShopItem {
         return stack;
     }
 
+    public ItemStack getItem(String... add) {
+        ItemStack stack = item.clone();
+        ItemMeta meta = stack.getItemMeta();
+        if (!meta.hasDisplayName()) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
+        }
+        ArrayList<String> lore = new ArrayList<>();
+        Core.getInstance().getConfig().getStringList("guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
+        for (String s : add) lore.add(ChatColor.translateAlternateColorCodes('&', s));
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+
+        stack = NBTEditor.set(stack, sellPrice, "ItemSellPrice");
+        stack = NBTEditor.set(stack, buyPrice, "ItemBuyPrice");
+        stack = NBTEditor.set(stack, id, "ShopItemID");
+        return stack;
+    }
+
     /**
      * Get the sell price
      *

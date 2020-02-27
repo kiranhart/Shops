@@ -24,15 +24,11 @@ public class HelpCommand extends Subcommand {
         }
 
         if (args.length == 1) {
-            ShopAPI.get().centerMsg(sender, "&e&b&nShops Help");
-            ShopAPI.get().centerMsg(sender, "");
-            ShopAPI.get().centerMsg(sender, "&6[] &f- Optional");
-            ShopAPI.get().centerMsg(sender, "&d<> &f- Required");
-            ShopAPI.get().centerMsg(sender, "");
-            ShopAPI.get().centerMsg(sender, "&f/&bshops &6[&bcategory&6]");
-            ShopAPI.get().centerMsg(sender, "&f/&bshops create &d<&bcategory&d>");
-            ShopAPI.get().centerMsg(sender, "&f/&bshops edit &d<&bcategory&d>");
-            ShopAPI.get().centerMsg(sender, "");
+           if (ShopAPI.get().hasPerm(sender, ShopPerm.ADMIN)) {
+               Core.getInstance().getConfig().getStringList("help.admin").forEach(line -> ShopAPI.get().centerMsg(sender, line));
+           } else {
+               Core.getInstance().getConfig().getStringList("help.player").forEach(line -> ShopAPI.get().centerMsg(sender, line));
+           }
         }
     }
 

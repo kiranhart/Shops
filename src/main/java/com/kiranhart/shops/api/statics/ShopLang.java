@@ -24,9 +24,12 @@ public class ShopLang {
     public static final String SHOP_INVALID = "shop.invalid";
     public static final String SHOP_CREATED = "shop.created";
     public static final String SHOP_REMOVED = "shop.removed";
+    public static final String SHOP_ITEM_REMOVED = "shop.itemremoved";
+    public static final String SHOP_ADD_ITEM = "shop.additem";
     public static final String SHOP_PRIVATE = "shop.private";
     public static final String SHOP_SOLD = "shop.sold";
     public static final String SHOP_BOUGHT = "shop.bought";
+    public static final String SHOP_ICON_UPDATED = "shop.iconupdated";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";
@@ -37,4 +40,5 @@ public class ShopLang {
     public static final String COMMAND_ARGS_OPEN = "cmd.args.open";
     public static final String COMMAND_ARGS_EDIT = "cmd.args.edit";
     public static final String COMMAND_ARGS_ADDITEM = "cmd.args.additem";
+    public static final String COMMAND_ARGS_SETICON = "cmd.args.seticon";
 }

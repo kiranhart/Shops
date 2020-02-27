@@ -1,4 +1,4 @@
-package com.kiranhart.shops.events;
+package com.kiranhart.shops.api.events;
 /*
     Created by Kiran Hart
     Date: February / 19 / 2020

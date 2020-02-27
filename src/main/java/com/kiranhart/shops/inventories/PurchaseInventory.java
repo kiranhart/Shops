@@ -7,7 +7,8 @@ import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.api.statics.ShopLang;
-import com.kiranhart.shops.events.ShopItemPurchaseEvent;
+import com.kiranhart.shops.api.events.ShopItemPurchaseEvent;
+import com.kiranhart.shops.shop.Receipt;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.ShopItem;
 import com.kiranhart.shops.shop.Transaction;
@@ -16,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -43,33 +45,58 @@ public class PurchaseInventory extends HartInventory {
     public void onClick(InventoryClickEvent e, int slot) {
         e.setCancelled(true);
         Player p = (Player) e.getWhoClicked();
+        Transaction transaction;
 
         switch (slot) {
             case 20:
-                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 1).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_FIRST)).getInventory());
                 break;
             case 29:
-                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 5).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_SECOND)).getInventory());
                 break;
             case 24:
-                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 1).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_FIRST)).getInventory());
                 break;
             case 33:
-                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 5).getInventory());
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_SECOND)).getInventory());
                 break;
             case 30:
-                if (ShopAPI.get().getAmountOfItems(p, this.shopItem.getItem()) <= 0) {
+                if (ShopAPI.get().itemCount(p, this.shopItem.getItem().getType()) <= 0) {
                     return;
                 }
 
-                int amount = ShopAPI.get().getAmountOfItems(p, this.shopItem.getItem());
-                ShopAPI.get().removeItemsFromPlayer(p.getInventory(), shopItem.getItem(), amount);
+                int amount = ShopAPI.get().itemCount(p, this.shopItem.getItem().getType());
+
+                ShopAPI.get().removeItems(p.getInventory(), shopItem.getItem().getType(), amount);
                 p.updateInventory();
 
                 Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
 
                 Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * amount).sendPrefixedMessage(p);
-                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", this.total).sendPrefixedMessage(p);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", amount).sendPrefixedMessage(p);
+
+                // save transaction depending on settings
+                transaction = new Transaction(
+                        this.shop,
+                        this.shopItem,
+                        p.getUniqueId(),
+                        amount,
+                        Transaction.TransactionType.SOLD);
+
+                if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                    ShopAPI.get().sendDiscordMessage(p, transaction);
+                }
+
+                if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                    p.getInventory().addItem(new Receipt(p,transaction).getReceipt());
+                }
+
+                if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                    ShopAPI.get().saveTransactions(transaction);
+                } else {
+                    Core.getInstance().getTransactions().add(transaction);
+                }
+
                 break;
             case 31:
                 if (Core.getInstance().getEconomy().getBalance(p) >= shopItem.getBuyPrice() * this.total) {
@@ -84,12 +111,20 @@ public class PurchaseInventory extends HartInventory {
                         Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
 
                         // save transaction depending on settings
-                        Transaction transaction = new Transaction(
+                        transaction = new Transaction(
                                 this.shop,
                                 this.shopItem,
                                 p.getUniqueId(),
                                 this.total,
                                 Transaction.TransactionType.BOUGHT);
+
+                        if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                            ShopAPI.get().sendDiscordMessage(p, transaction);
+                        }
+
+                        if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                            p.getInventory().addItem(new Receipt(p,transaction).getReceipt());
+                        }
 
                         if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
                             ShopAPI.get().saveTransactions(transaction);
@@ -97,6 +132,41 @@ public class PurchaseInventory extends HartInventory {
                             Core.getInstance().getTransactions().add(transaction);
                         }
                     }
+                }
+                break;
+            case 32:
+                if (ShopAPI.get().itemCount(p, this.shopItem.getItem().getType()) <= 0) {
+                    return;
+                }
+
+                ShopAPI.get().removeItems(p.getInventory(), shopItem.getItem().getType(), this.total);
+                p.updateInventory();
+
+                Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * this.total);
+
+                Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * this.total).sendPrefixedMessage(p);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", this.total).sendPrefixedMessage(p);
+
+                // save transaction depending on settings
+                transaction = new Transaction(
+                        this.shop,
+                        this.shopItem,
+                        p.getUniqueId(),
+                        this.total,
+                        Transaction.TransactionType.SOLD);
+
+                if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                    ShopAPI.get().sendDiscordMessage(p, transaction);
+                }
+
+                if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                    p.getInventory().addItem(new Receipt(p,transaction).getReceipt());
+                }
+
+                if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                    ShopAPI.get().saveTransactions(transaction);
+                } else {
+                    Core.getInstance().getTransactions().add(transaction);
                 }
                 break;
             case 49:

@@ -39,13 +39,19 @@ public class EditInventory extends HartInventory {
         if (slot == 33) {
             Core.getInstance().getShopsFile().getConfig().set("shops." + this.shopName.toLowerCase() + ".public", !ShopAPI.get().isShopPublic(this.shopName));
             Core.getInstance().getShopsFile().saveConfig();
-            p.openInventory(this.getInventory());
+            Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shopName)).findFirst().get().update();
+            p.openInventory(new EditInventory(this.shopName).getInventory());
         }
 
         if (slot == 31) {
             ShopAPI.get().removeShop(this.shopName);
             p.closeInventory();
             Core.getInstance().getLocale().getMessage(ShopLang.SHOP_REMOVED).processPlaceholder("shopname", this.shopName).sendPrefixedMessage(p);
+            Core.getInstance().getShops().removeIf(shop -> shop.getName().equalsIgnoreCase(this.shopName));
+        }
+
+        if (slot == 29) {
+            p.openInventory(new ShopContentsInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shopName)).findFirst().get()).getInventory());
         }
 
         if (slot == 13) {
@@ -54,6 +60,7 @@ public class EditInventory extends HartInventory {
                 Core.getInstance().getShopsFile().getConfig().set("shops." + this.shopName.toLowerCase() + ".title", text);
                 Core.getInstance().getShopsFile().saveConfig();
                 player.openInventory(this.getInventory());
+                Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shopName)).findFirst().get().update();
                 return AnvilGUI.Response.close();
             }).text(ChatColor.translateAlternateColorCodes('&', "&bEnter new item name")).title(ChatColor.translateAlternateColorCodes('&', "&bEnter new Item Name")).plugin(Core.getInstance()).open(p);
         }

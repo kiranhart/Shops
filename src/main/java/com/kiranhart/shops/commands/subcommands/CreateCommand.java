@@ -10,7 +10,7 @@ import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
-import com.kiranhart.shops.events.ShopCreateEvent;
+import com.kiranhart.shops.api.events.ShopCreateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -24,7 +24,7 @@ public class CreateCommand extends Subcommand {
             return;
         }
 
-        if (args.length == 2) {
+        if (args.length == 1) {
             Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_ARGS_CREATE).sendPrefixedMessage(sender);
             return;
         }

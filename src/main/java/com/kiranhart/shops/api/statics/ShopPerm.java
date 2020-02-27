@@ -17,4 +17,5 @@ public class ShopPerm {
     public static final String CMD_LIST = BASE + ".cmds.list";
     public static final String CMD_EDIT = BASE + ".cmds.edit";
     public static final String CMD_ADDITEM = BASE + ".cmds.additem";
+    public static final String CMD_SET_ICON = BASE + ".cmds.seticon";
 }

@@ -5,7 +5,7 @@ import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
-import com.kiranhart.shops.events.ShopRemoveEvent;
+import com.kiranhart.shops.api.events.ShopRemoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 

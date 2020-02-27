@@ -48,6 +48,12 @@ public class Shop {
         this.shopItems = loadShopItems();
     }
 
+    public void update() {
+            this.title = Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".title");
+            this.id = UUID.fromString(Objects.requireNonNull(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".id")));
+            this.isPublic = Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + this.name.toLowerCase() + ".public");
+    }
+
     public boolean hasItems() {
         ConfigurationSection sec = Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops." + this.name.toLowerCase() + ".items");
         if (sec == null || sec.getKeys(false).size() == 0) return false;

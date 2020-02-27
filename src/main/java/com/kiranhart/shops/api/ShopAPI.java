@@ -6,7 +6,10 @@ import com.kiranhart.shops.api.enums.DefaultFontInfo;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.ShopItem;
 import com.kiranhart.shops.shop.Transaction;
+import com.kiranhart.shops.util.helpers.DiscordWebhook;
 import com.kiranhart.shops.util.helpers.NBTEditor;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -17,14 +20,18 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.StringUtil;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The current file has been created by Kiran Hart
@@ -167,6 +174,24 @@ public class ShopAPI {
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseMaterial().name());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
         Core.getInstance().getShopsFile().saveConfig();
+
+        loadAllShops();
+    }
+
+    /**
+     * Set the icon of the shop
+     *
+     * @param name is the shop name
+     * @param material is the material it's being changed too.
+     */
+    public void setShopIcon(String name, XMaterial material) {
+        // check if the shop exists first
+        if (!doesShopExistsOnFile(name)) {
+            return;
+        }
+
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", material.parseMaterial().name());
+        Core.getInstance().getShopsFile().saveConfig();
     }
 
     /**
@@ -276,10 +301,12 @@ public class ShopAPI {
      * Load all of the shops regardless if they're configured
      */
     public void loadAllShops() {
+        Core.getInstance().getShops().clear();
         if (this.anyShopsExists()) {
             this.getAllShopNames().forEach(shop -> Core.getInstance().getShops().add(new Shop(shop)));
         }
     }
+
 
     /**
      * Check whether or not the shop is public
@@ -404,9 +431,9 @@ public class ShopAPI {
     /**
      * Used to perform the purchase for a player
      *
-     * @param p is the player you want to add the item to
+     * @param p        is the player you want to add the item to
      * @param shopItem is the shop item
-     * @param total is the total amount of items
+     * @param total    is the total amount of items
      */
     public void performPurchase(Player p, ShopItem shopItem, int total) {
         for (int i = 0; i < total; i++) {
@@ -440,43 +467,79 @@ public class ShopAPI {
      * Get the total amount of items in a player inventory
      *
      * @param player the player you want to check
-     * @param stack the stack you're searching for
+     * @param material  the stack you're searching for
      * @return the total amount of items found
      */
-    public int getAmountOfItems(Player player, ItemStack stack) {
-        if (stack == null) return 0;
-        int amount = 0;
-        for (int i = 0; i < player.getInventory().getSize(); i++) {
-            ItemStack slot = player.getInventory().getItem(i);
-            if (slot == null || !slot.isSimilar(stack)) continue;
-            amount += slot.getAmount();
+    public int itemCount(Player player, Material material) {
+        int count = 0;
+        PlayerInventory inv = player.getInventory();
+        for (ItemStack is : inv.all(material).values()) {
+            if (is != null && is.getType() == material) {
+                count = count + is.getAmount();
+            }
         }
-        return amount;
+        return count;
     }
 
     /**
-     * Remove a specific amount of items from an inventory
+     * remove an item from inventory
      *
-     * @param inventory is the inventory you're removing from
-     * @param stack is the stack you're targeting
-     * @param amount is the amount you wish to remove
+     * @param inventory the inventory
+     * @param type is the material type you're targeting
+     * @param amount is how much you wanna remove
      */
-    public void removeItemsFromPlayer(Inventory inventory, ItemStack stack, int amount) {
+    public void removeItems(Inventory inventory, Material type, int amount) {
         if (amount <= 0) return;
-        for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack slot = inventory.getItem(i);
-            if (slot == null) continue;
-            if (stack.isSimilar(slot)) {
-                int newAmount = slot.getAmount() - amount;
+        int size = inventory.getSize();
+        for (int slot = 0; slot < size; slot++) {
+            ItemStack is = inventory.getItem(slot);
+            if (is == null) continue;
+            if (type == is.getType()) {
+                int newAmount = is.getAmount() - amount;
                 if (newAmount > 0) {
-                    slot.setAmount(newAmount);
+                    is.setAmount(newAmount);
                     break;
                 } else {
-                    inventory.clear(i);
+                    inventory.clear(slot);
                     amount = -newAmount;
                     if (amount == 0) break;
                 }
             }
+        }
+    }
+
+    public void sendDiscordMessage(Player p, Transaction transaction) {
+        DiscordWebhook hook = new DiscordWebhook(Core.getInstance().getConfig().getString("discord.webhook"));
+
+        hook.setUsername(Core.getInstance().getConfig().getString("discord.username"));
+        hook.setAvatarUrl(Core.getInstance().getConfig().getString("discord.avatarUrl"));
+
+        String title = (transaction.getTransactionType() == Transaction.TransactionType.BOUGHT) ? Core.getInstance().getConfig().getString("discord.title.buy") : Core.getInstance().getConfig().getString("discord.title.sell");
+        title = title.replace("%player%", p.getName());
+        title = title.replace("%amount%", String.valueOf(transaction.getQuantity()));
+        title = title.replace("%item%", StringUtils.capitalize(transaction.getShopItem().getMaterial().getType().name().replace("_", " ").toLowerCase()));
+
+
+        Color color = (Core.getInstance().getConfig().getBoolean("discord.random-color")) ?
+                Color.getHSBColor(ThreadLocalRandom.current().nextFloat() * 360, ThreadLocalRandom.current().nextFloat() * 101f, ThreadLocalRandom.current().nextFloat() * 101f) :
+                Color.getHSBColor((float) Core.getInstance().getConfig().getDouble("discord.color.h"), (float) Core.getInstance().getConfig().getDouble("discord.color.s"), (float) Core.getInstance().getConfig().getDouble("discord.color.b"));
+
+        hook.addEmbed(new DiscordWebhook.EmbedObject()
+                .setTitle(title)
+                .setColor(color)
+                .addField(Core.getInstance().getConfig().getString("discord.buyfield.name"), Core.getInstance().getConfig().getString("discord.buyfield.value").replace("%amount%", String.valueOf(transaction.getShopItem().getBuyPrice())), Core.getInstance().getConfig().getBoolean("discord.buyfield.inline"))
+                .addField(Core.getInstance().getConfig().getString("discord.sellfield.name"), Core.getInstance().getConfig().getString("discord.sellfield.value").replace("%amount%", String.valueOf(transaction.getShopItem().getSellPrice())), Core.getInstance().getConfig().getBoolean("discord.sellfield.inline"))
+                .addField(Core.getInstance().getConfig().getString("discord.buyerfield.name"), Core.getInstance().getConfig().getString("discord.buyerfield.value").replace("%player%", Bukkit.getPlayer(transaction.getBuyer()).getName()), Core.getInstance().getConfig().getBoolean("discord.buyerfield.inline"))
+                .addField(Core.getInstance().getConfig().getString("discord.itemfield.name"), Core.getInstance().getConfig().getString("discord.itemfield.value").replace("%item%", StringUtils.capitalize(transaction.getShopItem().getMaterial().getType().name().replace("_", " ").toLowerCase())), Core.getInstance().getConfig().getBoolean("discord.itemfield.inline"))
+                .addField(Core.getInstance().getConfig().getString("discord.quantityfield.name"), Core.getInstance().getConfig().getString("discord.quantityfield.value").replace("%quantity%", String.valueOf(transaction.getQuantity())), Core.getInstance().getConfig().getBoolean("discord.quantityfield.inline"))
+                .addField(Core.getInstance().getConfig().getString("discord.finalpricefield.name"), Core.getInstance().getConfig().getString("discord.finalpricefield.value").replace("%amount%", String.valueOf((transaction.getTransactionType() == Transaction.TransactionType.BOUGHT) ? transaction.getQuantity() * transaction.getShopItem().getBuyPrice() : transaction.getQuantity() * transaction.getShopItem().getSellPrice())), Core.getInstance().getConfig().getBoolean("discord.finalpricefield.inline"))
+                .addField(Core.getInstance().getConfig().getString("discord.typefield.name"), Core.getInstance().getConfig().getString("discord.typefield.value").replace("%type%", transaction.getTransactionType().getType()), Core.getInstance().getConfig().getBoolean("discord.typefield.inline"))
+        );
+
+        try {
+            hook.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

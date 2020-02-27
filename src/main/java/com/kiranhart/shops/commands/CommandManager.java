@@ -36,6 +36,7 @@ public class CommandManager implements CommandExecutor {
         commands.add(new EditCommand());
         commands.add(new AddItemCommand());
         commands.add(new OpenCommand());
+        commands.add(new SetIconCommand());
     }
 
     @Override
@@ -51,7 +52,9 @@ public class CommandManager implements CommandExecutor {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    p.openInventory(new SelectShopInventory().getInventory());
+                    if (Core.getInstance().getShops().size() != 0) {
+                        p.openInventory(new SelectShopInventory().getInventory());
+                    }
                 } else {
                     Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_HELP).sendPrefixedMessage(sender);
                 }

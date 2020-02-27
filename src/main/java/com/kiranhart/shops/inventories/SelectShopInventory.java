@@ -41,8 +41,6 @@ public class SelectShopInventory extends HartInventory {
                 this.defaultSize = 36;
             if (Core.getInstance().getShops().size() >= 37 && Core.getInstance().getShops().size() <= 45)
                 this.defaultSize = 45;
-            else
-                this.defaultSize = 54;
         }
     }
 

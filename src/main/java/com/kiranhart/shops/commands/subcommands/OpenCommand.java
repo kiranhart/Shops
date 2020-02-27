@@ -34,10 +34,10 @@ public class OpenCommand extends Subcommand {
         }
 
         if (args.length == 2) {
-            if (Core.getInstance().getShops().stream().noneMatch(shop -> shop.getName().equalsIgnoreCase(args[1]))) {
-                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_INVALID).processPlaceholder("shopname", args[1]).sendPrefixedMessage(p);
-                return;
-            }
+//            if (Core.getInstance().getShops().stream().noneMatch(shop -> shop.getName().equalsIgnoreCase(args[1]))) {
+//                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_INVALID).processPlaceholder("shopname", args[1]).sendPrefixedMessage(p);
+//                return;
+//            }
 
             p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(args[1])).findFirst().get()).getInventory());
         }

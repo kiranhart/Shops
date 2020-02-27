@@ -3,7 +3,7 @@ package com.kiranhart.shops;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.commands.CommandManager;
-import com.kiranhart.shops.events.HartInventoryListener;
+import com.kiranhart.shops.api.events.HartInventoryListener;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.helpers.ConfigWrapper;

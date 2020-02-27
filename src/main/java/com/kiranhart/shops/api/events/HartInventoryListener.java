@@ -1,4 +1,4 @@
-package com.kiranhart.shops.events;
+package com.kiranhart.shops.api.events;
 
 import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.util.Debugger;

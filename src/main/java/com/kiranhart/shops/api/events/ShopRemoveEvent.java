@@ -1,4 +1,4 @@
-package com.kiranhart.shops.events;
+package com.kiranhart.shops.api.events;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;

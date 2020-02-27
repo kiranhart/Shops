@@ -6,6 +6,7 @@ import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -84,6 +85,7 @@ public class AddItemCommand extends Subcommand {
 
             ShopAPI.get().addShopItem(args[1].toLowerCase(), ShopAPI.get().getItemInHand(p), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
             Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(args[1])).findFirst().get().updateItems();
+            Core.getInstance().getLocale().getMessage(ShopLang.SHOP_ADD_ITEM).processPlaceholder("item", StringUtils.capitalize(ShopAPI.get().getItemInHand(p).getType().name().replace("_", " ").toLowerCase())).sendPrefixedMessage(p);
         }
     }
 
