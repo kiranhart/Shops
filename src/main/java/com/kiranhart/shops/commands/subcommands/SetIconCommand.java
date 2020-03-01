@@ -50,7 +50,7 @@ public class SetIconCommand extends Subcommand {
                 return;
             }
 
-            ShopAPI.get().setShopIcon(args[1].toLowerCase(), XMaterial.matchXMaterial(ShopAPI.get().getItemInHand(p)));
+            ShopAPI.get().setShopIcon(args[1].toLowerCase(), ShopAPI.get().getItemInHand(p));
             Core.getInstance().getLocale().getMessage(ShopLang.SHOP_ICON_UPDATED).processPlaceholder("item", StringUtils.capitalize(XMaterial.matchXMaterial(ShopAPI.get().getItemInHand(p)).parseMaterial().name().replace("_", " ").toLowerCase())).sendPrefixedMessage(p);
         }
     }

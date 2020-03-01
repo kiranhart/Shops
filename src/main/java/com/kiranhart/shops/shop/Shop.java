@@ -85,7 +85,7 @@ public class Shop {
     }
 
     public ItemStack getIcon() {
-        ItemStack stack = XMaterial.matchXMaterial(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".icon")).get().parseItem();
+        ItemStack stack = Core.getInstance().getShopsFile().getConfig().getItemStack("shops." + this.name.toLowerCase() + ".icon");
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.allshops.shop-icon.name").replace("%shop_name%", this.name).replace("%shop_title%", ShopAPI.get().getShopTitleByName(this.name))));
         ArrayList<String> lore = new ArrayList<>();

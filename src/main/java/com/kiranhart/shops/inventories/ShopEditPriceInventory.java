@@ -2,7 +2,6 @@ package com.kiranhart.shops.inventories;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
-import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.shop.Shop;
@@ -11,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 /**

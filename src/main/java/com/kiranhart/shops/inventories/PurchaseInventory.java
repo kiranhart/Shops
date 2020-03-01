@@ -2,7 +2,6 @@ package com.kiranhart.shops.inventories;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
-import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
 import com.kiranhart.shops.api.enums.Settings;
@@ -17,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -88,7 +86,7 @@ public class PurchaseInventory extends HartInventory {
                 }
 
                 if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                    p.getInventory().addItem(new Receipt(p,transaction).getReceipt());
+                    ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p,transaction).getReceipt());
                 }
 
                 if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
@@ -97,6 +95,7 @@ public class PurchaseInventory extends HartInventory {
                     Core.getInstance().getTransactions().add(transaction);
                 }
 
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
                 break;
             case 31:
                 if (Core.getInstance().getEconomy().getBalance(p) >= shopItem.getBuyPrice() * this.total) {
@@ -106,7 +105,9 @@ public class PurchaseInventory extends HartInventory {
                     if (!purchaseEvent.isCancelled()) {
 
                         Core.getInstance().getEconomy().withdrawPlayer(p, shopItem.getBuyPrice() * this.total);
-                        ShopAPI.get().performPurchase(p, shopItem, total);
+                        for (int i = 0; i < this.total; i++) {
+                            ShopAPI.get().addItemToPlayerInventory(p, shopItem.getMaterial());
+                        }
                         Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", shopItem.getBuyPrice() * this.total).sendPrefixedMessage(p);
                         Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
 
@@ -123,7 +124,7 @@ public class PurchaseInventory extends HartInventory {
                         }
 
                         if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                            p.getInventory().addItem(new Receipt(p,transaction).getReceipt());
+                           ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p,transaction).getReceipt());
                         }
 
                         if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
@@ -131,6 +132,8 @@ public class PurchaseInventory extends HartInventory {
                         } else {
                             Core.getInstance().getTransactions().add(transaction);
                         }
+
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
                     }
                 }
                 break;
@@ -160,7 +163,7 @@ public class PurchaseInventory extends HartInventory {
                 }
 
                 if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                    p.getInventory().addItem(new Receipt(p,transaction).getReceipt());
+                    ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p,transaction).getReceipt());
                 }
 
                 if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
@@ -168,6 +171,8 @@ public class PurchaseInventory extends HartInventory {
                 } else {
                     Core.getInstance().getTransactions().add(transaction);
                 }
+
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
                 break;
             case 49:
                 p.closeInventory();

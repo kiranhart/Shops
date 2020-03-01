@@ -2,7 +2,6 @@ package com.kiranhart.shops.inventories;
 
 import com.google.common.collect.Lists;
 import com.kiranhart.shops.Core;
-import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.api.statics.ShopLang;
@@ -15,11 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**

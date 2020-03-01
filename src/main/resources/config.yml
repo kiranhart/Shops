@@ -1,7 +1,7 @@
 lang: "en_US"
 
 discord:
-  webhook: "https://discordapp.com/api/webhooks/680994540341297155/_PrsGlDnj0JG4XC_gnSoYwU8EcTA5XTse3G_c_C2vqwsbz7_lzOAg46P09_ef7rF2xDh"
+  webhook: ""
   avatarUrl: "https://icons.iconarchive.com/icons/graphicloads/flat-finance/256/dollar-icon.png"
   username: "Shops"
   title:
@@ -57,7 +57,7 @@ help:
     - "&f/&bshops open &6<&bcategory&6>"
     - "&f/&bshops create &d<&bcategory&d>"
     - "&f/&bshops remove &d<&bcategory&d>"
-    - "&f/&bshops list &d<&bcategory&d>"
+    - "&f/&bshops list"
     - "&f/&bshops additem &d<&bcategory&d> &d<&bsell&d> &d<&bbuy&d>"
     - "&f/&bshops edit &d<&bcategory&d>"
     - "&f/&bshops seticon &d<&bcategory&d>"

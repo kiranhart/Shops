@@ -2,7 +2,6 @@ package com.kiranhart.shops.inventories;
 
 import com.google.common.collect.Lists;
 import com.kiranhart.shops.Core;
-import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.shop.Shop;
@@ -64,7 +63,11 @@ public class SelectShopInventory extends HartInventory {
                     return;
                 }
 
-                p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(name)).findFirst().get()).getInventory());
+                if (ShopAPI.get().doesShopHaveItems(name.toLowerCase())) {
+                    p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(name)).findFirst().get()).getInventory());
+                } else {
+
+                }
             }
         }
     }

@@ -17,6 +17,8 @@ shop.private = "&cYou cannot purchase items from a private shop!"
 shop.sold = "&aYou sold a total of &b%total% &aitems"
 shop.bought = "&aYou bought a total of &b%total% &aitems"
 shop.iconupdated = "&aChanged that shop's icon to&f: &b%item%"
+shop.noitems = "&cCannot open that shop until items are added"
+shop.none = "&cThere are currently no shops, please create one."
 
 cmd.help = "&f/&bshops help"
 cmd.invalid = "&cThat command is not valid!"

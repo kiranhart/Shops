@@ -1,12 +1,10 @@
 package com.kiranhart.shops.commands.subcommands;
 
-import com.cryptomorin.xseries.ActionBar;
 import com.kiranhart.shops.Core;
+import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.commands.Subcommand;
 import com.kiranhart.shops.inventories.ShopInventory;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,12 +32,22 @@ public class OpenCommand extends Subcommand {
         }
 
         if (args.length == 2) {
-//            if (Core.getInstance().getShops().stream().noneMatch(shop -> shop.getName().equalsIgnoreCase(args[1]))) {
-//                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_INVALID).processPlaceholder("shopname", args[1]).sendPrefixedMessage(p);
-//                return;
-//            }
 
-            p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(args[1])).findFirst().get()).getInventory());
+            if (ShopAPI.get().anyShopsExists()) {
+
+                if (ShopAPI.get().doesShopExistsOnFile(args[1].toLowerCase())) {
+                    if (!ShopAPI.get().doesShopHaveItems(args[1])) {
+                        Core.getInstance().getLocale().getMessage(ShopLang.SHOP_NO_ITEMS).sendPrefixedMessage(p);
+                    }
+
+                    p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(args[1])).findFirst().get()).getInventory());
+                } else {
+                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_INVALID).processPlaceholder("shopname", args[1]).sendPrefixedMessage(p);
+                }
+
+            } else {
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_NONE).sendPrefixedMessage(p);
+            }
         }
 
     }

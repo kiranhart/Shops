@@ -2,7 +2,6 @@ package com.kiranhart.shops.inventories;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
-import com.kiranhart.shops.api.HartInventory;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
 import com.kiranhart.shops.api.statics.ShopLang;

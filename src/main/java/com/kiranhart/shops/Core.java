@@ -2,8 +2,8 @@ package com.kiranhart.shops;
 
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
-import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.api.events.HartInventoryListener;
+import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.helpers.ConfigWrapper;
@@ -41,6 +41,7 @@ public final class Core extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        // vault setup
         if (!setupEconomy()) {
             Bukkit.getConsoleSender().sendMessage(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);

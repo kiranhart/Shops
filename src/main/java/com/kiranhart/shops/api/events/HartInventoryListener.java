@@ -1,6 +1,6 @@
 package com.kiranhart.shops.api.events;
 
-import com.kiranhart.shops.api.HartInventory;
+import com.kiranhart.shops.inventories.HartInventory;
 import com.kiranhart.shops.util.Debugger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

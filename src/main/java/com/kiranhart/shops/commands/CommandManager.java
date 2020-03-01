@@ -1,6 +1,7 @@
 package com.kiranhart.shops.commands;
 
 import com.kiranhart.shops.Core;
+import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.subcommands.*;
@@ -52,8 +53,14 @@ public class CommandManager implements CommandExecutor {
             if (args.length == 0) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    if (Core.getInstance().getShops().size() != 0) {
-                        p.openInventory(new SelectShopInventory().getInventory());
+                    if (ShopAPI.get().anyShopsExists()) {
+                        if (Core.getInstance().getShops().size() != 0) {
+                            p.openInventory(new SelectShopInventory().getInventory());
+                        } else {
+                            Core.getInstance().getLocale().getMessage(ShopLang.SHOP_NONE).sendPrefixedMessage(p);
+                        }
+                    } else {
+                        Core.getInstance().getLocale().getMessage(ShopLang.SHOP_NONE).sendPrefixedMessage(p);
                     }
                 } else {
                     Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_HELP).sendPrefixedMessage(sender);

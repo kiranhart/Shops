@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
 /**
  * The current file has been created by Kiran Hart
@@ -171,7 +172,7 @@ public class ShopAPI {
         // create the with the default settings
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".title", name);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".id", UUID.randomUUID().toString());
-        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseMaterial().name());
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseItem());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
         Core.getInstance().getShopsFile().saveConfig();
 
@@ -184,13 +185,13 @@ public class ShopAPI {
      * @param name is the shop name
      * @param material is the material it's being changed too.
      */
-    public void setShopIcon(String name, XMaterial material) {
+    public void setShopIcon(String name, ItemStack material) {
         // check if the shop exists first
         if (!doesShopExistsOnFile(name)) {
             return;
         }
 
-        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", material.parseMaterial().name());
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", material);
         Core.getInstance().getShopsFile().saveConfig();
     }
 
@@ -508,6 +509,12 @@ public class ShopAPI {
         }
     }
 
+    /**
+     * Send a discord message
+     *
+     * @param p is the player
+     * @param transaction is the transaction that was just completed
+     */
     public void sendDiscordMessage(Player p, Transaction transaction) {
         DiscordWebhook hook = new DiscordWebhook(Core.getInstance().getConfig().getString("discord.webhook"));
 
@@ -541,5 +548,16 @@ public class ShopAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Add an item to the player inventory, but drop if inventory is full
+     *
+     * @param p is the player
+     * @param stack is the item
+     */
+    public void addItemToPlayerInventory(Player p, ItemStack stack) {
+        final Map<Integer, ItemStack> fallenItems = p.getInventory().addItem(Stream.of(p.getInventory().getContents()).filter(item -> item != null).toArray(size -> new ItemStack[size]));
+        if (!fallenItems.isEmpty()) fallenItems.values().forEach(item -> p.getWorld().dropItemNaturally(p.getLocation(), item));
     }
 }

@@ -6,6 +6,7 @@ import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
 import com.kiranhart.shops.inventories.EditListInventory;
+import com.kiranhart.shops.shop.Shop;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

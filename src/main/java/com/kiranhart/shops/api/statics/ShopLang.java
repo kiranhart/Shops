@@ -30,6 +30,8 @@ public class ShopLang {
     public static final String SHOP_SOLD = "shop.sold";
     public static final String SHOP_BOUGHT = "shop.bought";
     public static final String SHOP_ICON_UPDATED = "shop.iconupdated";
+    public static final String SHOP_NONE = "shop.none";
+    public static final String SHOP_NO_ITEMS = "shop.noitems";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";
