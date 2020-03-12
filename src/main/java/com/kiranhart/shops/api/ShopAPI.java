@@ -20,19 +20,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.StringUtil;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
 
 /**
  * The current file has been created by Kiran Hart
@@ -218,6 +211,7 @@ public class ShopAPI {
 
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase(), null);
         Core.getInstance().getShopsFile().saveConfig();
+        Core.getInstance().getShops().removeIf(shop -> shop.getName().equalsIgnoreCase(name));
     }
 
     /**
@@ -557,7 +551,7 @@ public class ShopAPI {
      * @param stack is the item
      */
     public void addItemToPlayerInventory(Player p, ItemStack stack) {
-        final Map<Integer, ItemStack> fallenItems = p.getInventory().addItem(Stream.of(p.getInventory().getContents()).filter(item -> item != null).toArray(size -> new ItemStack[size]));
-        if (!fallenItems.isEmpty()) fallenItems.values().forEach(item -> p.getWorld().dropItemNaturally(p.getLocation(), item));
+        HashMap<Integer, ItemStack> toDrop = p.getInventory().addItem(stack);
+        toDrop.values().forEach(item -> p.getWorld().dropItemNaturally(p.getLocation(), item));
     }
 }

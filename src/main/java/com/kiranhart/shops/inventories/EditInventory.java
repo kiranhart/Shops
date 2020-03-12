@@ -46,7 +46,6 @@ public class EditInventory extends HartInventory {
             ShopAPI.get().removeShop(this.shopName);
             p.closeInventory();
             Core.getInstance().getLocale().getMessage(ShopLang.SHOP_REMOVED).processPlaceholder("shopname", this.shopName).sendPrefixedMessage(p);
-            Core.getInstance().getShops().removeIf(shop -> shop.getName().equalsIgnoreCase(this.shopName));
         }
 
         if (slot == 29) {
