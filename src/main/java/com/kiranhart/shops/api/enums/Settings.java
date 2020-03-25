@@ -12,6 +12,7 @@ public enum Settings {
 
     USE_DEBUGGER("use-debugger", true),
     USE_UPDATE_CHECKER("use-update-checker", true),
+    UPDATE_DELAY("update-delay", 600),
 
     DYNAMIC_SHOP_SIZE("dynamic-shop-size", true),
     SHOW_PRIVATE_SHOP_IN_SELECT("show-private-shop-in-select", false),

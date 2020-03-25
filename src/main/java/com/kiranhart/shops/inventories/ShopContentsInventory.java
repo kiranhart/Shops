@@ -36,15 +36,11 @@ public class ShopContentsInventory extends HartInventory {
         this.chunks = Lists.partition(shop.getShopItems(), 45);
 
         if ((boolean) SettingsManager.get(Settings.DYNAMIC_SHOP_SIZE)) {
-            if (Core.getInstance().getShops().size() <= 9) this.defaultSize = 9;
-            if (Core.getInstance().getShops().size() >= 10 && Core.getInstance().getShops().size() <= 18)
-                this.defaultSize = 18;
-            if (Core.getInstance().getShops().size() >= 19 && Core.getInstance().getShops().size() <= 27)
-                this.defaultSize = 27;
-            if (Core.getInstance().getShops().size() >= 28 && Core.getInstance().getShops().size() <= 36)
-                this.defaultSize = 36;
-            if (Core.getInstance().getShops().size() >= 37 && Core.getInstance().getShops().size() <= 45)
-                this.defaultSize = 45;
+            if (shop.getShopItems().size() <= 9) this.defaultSize = 9;
+            if (shop.getShopItems().size() >= 10 && shop.getShopItems().size() <= 18) this.defaultSize = 18;
+            if (shop.getShopItems().size() >= 19 && shop.getShopItems().size() <= 27) this.defaultSize = 27;
+            if (shop.getShopItems().size() >= 28 && shop.getShopItems().size() <= 36) this.defaultSize = 36;
+            if (shop.getShopItems().size() >= 37 && shop.getShopItems().size() <= 45) this.defaultSize = 45;
         }
     }
 
@@ -82,8 +78,10 @@ public class ShopContentsInventory extends HartInventory {
     @Override
     public Inventory getInventory() {
         Inventory inventory = Bukkit.createInventory(this, this.defaultSize, this.defaultTitle);
-        chunks.get(this.page - 1).forEach(item -> inventory.setItem(inventory.firstEmpty(), item.getItem(Core.getInstance().getConfig().getString("guis.shopcontent.removemsg"), Core.getInstance().getConfig().getString("guis.shopcontent.editmsg"))));
-
+        chunks.get(this.page - 1).forEach(item -> {
+            inventory.setItem(inventory.firstEmpty(), item.getItem(Core.getInstance().getConfig().getString("guis.shopcontent.removemsg"), Core.getInstance().getConfig().getString("guis.shopcontent.editmsg")));
+        });
+//
         if (this.defaultSize == 54) {
             inventory.setItem(48, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shopcontent.previous-page"));
             inventory.setItem(49, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shopcontent.close-item"));

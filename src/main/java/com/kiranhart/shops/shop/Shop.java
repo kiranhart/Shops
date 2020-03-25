@@ -49,9 +49,9 @@ public class Shop {
     }
 
     public void update() {
-            this.title = Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".title");
-            this.id = UUID.fromString(Objects.requireNonNull(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".id")));
-            this.isPublic = Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + this.name.toLowerCase() + ".public");
+        this.title = Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".title");
+        this.id = UUID.fromString(Objects.requireNonNull(Core.getInstance().getShopsFile().getConfig().getString("shops." + this.name.toLowerCase() + ".id")));
+        this.isPublic = Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + this.name.toLowerCase() + ".public");
     }
 
     public boolean hasItems() {

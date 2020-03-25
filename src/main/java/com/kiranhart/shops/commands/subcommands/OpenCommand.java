@@ -3,6 +3,7 @@ package com.kiranhart.shops.commands.subcommands;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
+import com.kiranhart.shops.api.statics.ShopPerm;
 import com.kiranhart.shops.commands.Subcommand;
 import com.kiranhart.shops.inventories.ShopInventory;
 import org.bukkit.command.CommandSender;
@@ -25,6 +26,11 @@ public class OpenCommand extends Subcommand {
         }
 
         Player p = (Player) sender;
+
+        if (!ShopAPI.get().hasPerm(sender, ShopPerm.CMD_ALL, ShopPerm.CMD_SETNAME))  {
+            Core.getInstance().getLocale().getMessage(ShopLang.NO_PERMISSION).sendPrefixedMessage(p);
+            return;
+        }
 
         if (args.length == 1) {
             Core.getInstance().getLocale().getMessage(ShopLang.COMMAND_ARGS_OPEN).sendPrefixedMessage(p);

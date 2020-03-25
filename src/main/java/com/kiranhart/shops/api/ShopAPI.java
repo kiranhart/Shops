@@ -167,6 +167,7 @@ public class ShopAPI {
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".id", UUID.randomUUID().toString());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseItem());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".buyonly", false);
         Core.getInstance().getShopsFile().saveConfig();
 
         loadAllShops();
@@ -212,6 +213,16 @@ public class ShopAPI {
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase(), null);
         Core.getInstance().getShopsFile().saveConfig();
         Core.getInstance().getShops().removeIf(shop -> shop.getName().equalsIgnoreCase(name));
+    }
+
+    /**
+     * Check if a shop is buy only
+     *
+     * @param name is the shop name
+     * @return if shop is buy only
+     */
+    public boolean isBuyOnly(String name) {
+        return Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + name.toLowerCase() + ".buyonly");
     }
 
     /**
@@ -510,6 +521,9 @@ public class ShopAPI {
      * @param transaction is the transaction that was just completed
      */
     public void sendDiscordMessage(Player p, Transaction transaction) {
+
+        if (Core.getInstance().getConfig().getString("discord.webhook").equalsIgnoreCase("")) return;
+
         DiscordWebhook hook = new DiscordWebhook(Core.getInstance().getConfig().getString("discord.webhook"));
 
         hook.setUsername(Core.getInstance().getConfig().getString("discord.username"));

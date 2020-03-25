@@ -2,6 +2,7 @@ package com.kiranhart.shops.shop;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
+import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.util.helpers.NBTEditor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -71,10 +72,10 @@ public class ShopItem {
         ItemStack stack = item.clone();
         ItemMeta meta = stack.getItemMeta();
         if (!meta.hasDisplayName()) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.name" : "guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
         }
         ArrayList<String> lore = new ArrayList<>();
-        Core.getInstance().getConfig().getStringList("guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
+        Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
         meta.setLore(lore);
         stack.setItemMeta(meta);
 
@@ -88,10 +89,10 @@ public class ShopItem {
         ItemStack stack = item.clone();
         ItemMeta meta = stack.getItemMeta();
         if (!meta.hasDisplayName()) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-ony.name" : "guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
         }
         ArrayList<String> lore = new ArrayList<>();
-        Core.getInstance().getConfig().getStringList("guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
+        Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
         for (String s : add) lore.add(ChatColor.translateAlternateColorCodes('&', s));
         meta.setLore(lore);
         stack.setItemMeta(meta);

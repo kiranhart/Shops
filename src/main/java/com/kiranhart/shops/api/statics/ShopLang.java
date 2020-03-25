@@ -10,7 +10,7 @@ public class ShopLang {
 
     public static final String PREFIX = "prefix";
 
-    public static final String NO_PERMISSION = "no-permission";
+    public static final String NO_PERMISSION = "nopermission";
     public static final String PLAYER_ONLY = "player-only";
     public static final String NOT_A_NUMBER = "not-a-number";
     public static final String AIR = "air";
@@ -32,6 +32,9 @@ public class ShopLang {
     public static final String SHOP_ICON_UPDATED = "shop.iconupdated";
     public static final String SHOP_NONE = "shop.none";
     public static final String SHOP_NO_ITEMS = "shop.noitems";
+    public static final String SHOP_BUY_ONLY_ON = "shop.buyonlyon";
+    public static final String SHOP_BUY_ONLY_OFF = "shop.buyonlyoff";
+    public static final String SHOP_SETNAME = "shop.setname";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";
@@ -43,4 +46,7 @@ public class ShopLang {
     public static final String COMMAND_ARGS_EDIT = "cmd.args.edit";
     public static final String COMMAND_ARGS_ADDITEM = "cmd.args.additem";
     public static final String COMMAND_ARGS_SETICON = "cmd.args.seticon";
+    public static final String COMMAND_ARGS_BUY_ONLY = "cmd.args.buyonly";
+    public static final String COMMAND_ARGS_SETNAME = "cmd.args.setname";
+    public static final String COMMAND_ARGS_CONTENTS = "cmd.args.contents";
 }

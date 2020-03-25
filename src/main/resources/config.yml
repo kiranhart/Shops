@@ -1,4 +1,5 @@
 lang: "en_US"
+metrics: true
 
 discord:
   webhook: ""
@@ -61,6 +62,8 @@ help:
     - "&f/&bshops additem &d<&bcategory&d> &d<&bsell&d> &d<&bbuy&d>"
     - "&f/&bshops edit &d<&bcategory&d>"
     - "&f/&bshops seticon &d<&bcategory&d>"
+    - "&f/&bshops setname &d<&bcategory&d> &d<&bname&d>"
+    - "&f/&bshops contents &d<&bcategory&d>"
     - ""
 
 receipt:
@@ -161,6 +164,13 @@ guis:
         - "&eSell Total&f: &a$%sell_total%"
         - ""
         - "&e(Left-Click) to Purchase"
+    iteminfobuyonly:
+      item: "SUNFLOWER"
+      name: "&b&lTotal&f: &e%amount%"
+      lore:
+        - "&eBuy Total&f: &a$%buy_total%"
+        - ""
+        - "&e(Left-Click) to Purchase"
     close-item:
       item: "BARRIER"
       name: "&c&lClose"
@@ -196,12 +206,32 @@ guis:
       name: "&b%shopname% &cDisabled"
       lore:
         - "&7Click to &aEnable &7this shop"
+    buyonlyon:
+      item: "LIME_WOOL"
+      name: "&B%shopname% &eis Buy Only"
+      lore:
+        - "&7Click to &cDisable &7buy only"
+    buyonlyoff:
+      item: "RED_WOOL"
+      name: "&b%shopname% &cisn't Buy Only"
+      lore:
+        - "&7Click to &aEnable &7buy only"
     close-item:
       item: "BARRIER"
       name: "&c&lClose"
       lore:
         - "&7Click to close inventory"
   shop:
+    previous-page:
+      item: "ARROW"
+      name: "&e&l<<"
+      lore:
+        - "&7Click to go back a page"
+    next-page:
+      item: "ARROW"
+      name: "&e&l>>"
+      lore:
+        - "&7Click to go to next page"
     close-item:
       item: "BARRIER"
       name: "&c&lClose"
@@ -213,6 +243,12 @@ guis:
       lore:
         - ""
         - "&eSell (x1)&f: &a$%sell_price%"
+        - "&eBuy (x1)&f: &a$%buy_price%"
+    purchase-item-buy-only:
+      #the custom name will only activate if the item doesn't already have a custom name.
+      name: "&e%material_name%"
+      lore:
+        - ""
         - "&eBuy (x1)&f: &a$%buy_price%"
   edit-list:
     title: "&8Select a shop to edit"

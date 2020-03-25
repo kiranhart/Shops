@@ -50,6 +50,10 @@ public class ShopInventory extends HartInventory {
         e.setCancelled(true);
         Player p = (Player) e.getWhoClicked();
 
+        // pagination
+        if (this.page >= 1 && slot == 48) p.openInventory(this.setPage(this.page - 1).getInventory());
+        if (this.page >= 1 && slot == 50) p.openInventory(this.setPage(this.page + 1).getInventory());
+
         if (this.shop.isPublic()) {
             ShopItem clickedItem = this.extractShopItem(e.getCurrentItem());
             if (clickedItem != null) {
@@ -78,6 +82,13 @@ public class ShopInventory extends HartInventory {
     public Inventory getInventory() {
         Inventory inventory = Bukkit.createInventory(this, this.defaultSize, this.defaultTitle);
         chunks.get(this.page - 1).forEach(shopItem -> inventory.setItem(inventory.firstEmpty(), shopItem.getItem()));
+
+        if (this.defaultSize == 54) {
+            inventory.setItem(48, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.previous-page"));
+            inventory.setItem(49, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.close-item"));
+            inventory.setItem(50, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.next-page"));
+        }
+
         return inventory;
     }
 

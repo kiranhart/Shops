@@ -38,13 +38,16 @@ public class CommandManager implements CommandExecutor {
         commands.add(new AddItemCommand());
         commands.add(new OpenCommand());
         commands.add(new SetIconCommand());
+        commands.add(new BuyOnlyCommand());
+        commands.add(new SetnameCommand());
+        commands.add(new ContentsCommand());
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!sender.hasPermission(ShopPerm.BASE)) {
-            Core.getInstance().getLocale().getMessage(ShopLang.PREFIX).sendPrefixedMessage(sender);
+            Core.getInstance().getLocale().getMessage(ShopLang.NO_PERMISSION).sendPrefixedMessage(sender);
             return true;
         }
 
