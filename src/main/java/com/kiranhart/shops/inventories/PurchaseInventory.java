@@ -16,6 +16,7 @@ import com.kiranhart.shops.util.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -49,16 +50,40 @@ public class PurchaseInventory extends HartInventory {
         try {
             switch (slot) {
                 case 20:
-                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_FIRST)).getInventory());
+                    if (e.getClick() == ClickType.LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_FIRST)).getInventory());
+                    }
+
+                    if (e.getClick() == ClickType.SHIFT_LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 64).getInventory());
+                    }
                     break;
                 case 29:
-                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_SECOND)).getInventory());
+                    if (e.getClick() == ClickType.LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_SECOND)).getInventory());
+                    }
+
+                    if (e.getClick() == ClickType.SHIFT_LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 64).getInventory());
+                    }
                     break;
                 case 24:
-                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_FIRST)).getInventory());
+                    if (e.getClick() == ClickType.LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_FIRST)).getInventory());
+                    }
+
+                    if (e.getClick() == ClickType.SHIFT_LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 64).getInventory());
+                    }
                     break;
                 case 33:
-                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_SECOND)).getInventory());
+                    if (e.getClick() == ClickType.LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_SECOND)).getInventory());
+                    }
+
+                    if (e.getClick() == ClickType.SHIFT_LEFT) {
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 64).getInventory());
+                    }
                     break;
                 case 30:
                     if (ShopAPI.get().itemCount(p, this.shopItem.getItem().getType()) <= 0) {
@@ -185,6 +210,9 @@ public class PurchaseInventory extends HartInventory {
                 case 49:
                     p.closeInventory();
                     break;
+                case 45:
+                    p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shop.getName())).findFirst().get()).getInventory());
+                    break;
             }
         } catch (Exception ex) {
             Debugger.report(ex, false);
@@ -214,6 +242,8 @@ public class PurchaseInventory extends HartInventory {
         inventory.setItem(31, ShopAPI.get().createPurchaseInventoryItem((ShopAPI.get().isBuyOnly(shop.getName())) ? "iteminfobuyonly" : "iteminfo", this.total, shopItem.getSellPrice() * this.total, shopItem.getBuyPrice() * this.total));
         inventory.setItem(32, ShopAPI.get().createPurchaseInventoryItem("selltotal", this.total, 0, 0));
 
+        // back item
+        inventory.setItem(45, ShopAPI.get().createPurchaseInventoryItem("back-item", 0, 0, 0));
         // close item
         inventory.setItem(49, ShopAPI.get().createPurchaseInventoryItem("close-item", 0, 0, 0));
         return inventory;

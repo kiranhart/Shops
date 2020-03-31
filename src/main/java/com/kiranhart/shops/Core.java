@@ -110,7 +110,7 @@ public final class Core extends JavaPlugin {
 
         console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&bShops&8] &e>>&a Setting up language system"));
         // setup the locale
-        new Locale(this, "en_US");
+        new Locale(this, getConfig().getString("lang"));
         this.locale = Locale.getLocale(getConfig().getString("lang"));
 
         console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&bShops&8] &e>>&a Registering events"));

@@ -54,6 +54,10 @@ public class ShopInventory extends HartInventory {
         if (this.page >= 1 && slot == 48) p.openInventory(this.setPage(this.page - 1).getInventory());
         if (this.page >= 1 && slot == 50) p.openInventory(this.setPage(this.page + 1).getInventory());
 
+        if (slot == 49) {
+            p.closeInventory();
+        }
+
         if (this.shop.isPublic()) {
             ShopItem clickedItem = this.extractShopItem(e.getCurrentItem());
             if (clickedItem != null) {
