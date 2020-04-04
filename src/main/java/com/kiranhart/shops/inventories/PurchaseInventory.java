@@ -136,7 +136,9 @@ public class PurchaseInventory extends HartInventory {
                         if (!purchaseEvent.isCancelled()) {
 
                             Core.getInstance().getEconomy().withdrawPlayer(p, shopItem.getBuyPrice() * this.total);
-                            ShopAPI.get().addItemToPlayerInventory(p, new ItemStack(XMaterial.matchXMaterial(shopItem.getMaterial()).parseMaterial(), this.total));
+                            for (int i = 0; i< this.total; i++) {
+                                ShopAPI.get().addItemToPlayerInventory(p, shopItem.getMaterial());
+                            }
                             Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", shopItem.getBuyPrice() * this.total).sendPrefixedMessage(p);
                             Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
 
