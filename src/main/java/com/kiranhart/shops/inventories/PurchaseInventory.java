@@ -86,7 +86,7 @@ public class PurchaseInventory extends HartInventory {
                     }
                     break;
                 case 30:
-                    if (ShopAPI.get().itemCount(p, this.shopItem.getItem().getType()) <= 0) {
+                    if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
                         return;
                     }
 
@@ -94,9 +94,9 @@ public class PurchaseInventory extends HartInventory {
                         return;
                     }
 
-                    int amount = ShopAPI.get().itemCount(p, this.shopItem.getItem().getType());
+                    int amount = ShopAPI.get().itemCount(p, this.shopItem.getMaterial());
 
-                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getItem().getType(), amount);
+                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), amount);
                     p.updateInventory();
 
                     Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
@@ -169,7 +169,7 @@ public class PurchaseInventory extends HartInventory {
                     }
                     break;
                 case 32:
-                    if (ShopAPI.get().itemCount(p, this.shopItem.getItem().getType()) <= 0) {
+                    if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
                         return;
                     }
 
@@ -177,20 +177,22 @@ public class PurchaseInventory extends HartInventory {
                         return;
                     }
 
-                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getItem().getType(), this.total);
+                    int finalRemove = (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) < this.total) ? ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) : this.total;
+
+                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), finalRemove);
                     p.updateInventory();
 
-                    Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * this.total);
+                    Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * finalRemove);
 
-                    Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * this.total).sendPrefixedMessage(p);
-                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", this.total).sendPrefixedMessage(p);
+                    Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * finalRemove).sendPrefixedMessage(p);
+                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", finalRemove).sendPrefixedMessage(p);
 
                     // save transaction depending on settings
                     transaction = new Transaction(
                             this.shop,
                             this.shopItem,
                             p.getUniqueId(),
-                            this.total,
+                            finalRemove,
                             Transaction.TransactionType.SOLD);
 
                     if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {

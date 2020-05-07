@@ -27,7 +27,7 @@ public class OpenCommand extends Subcommand {
 
         Player p = (Player) sender;
 
-        if (!ShopAPI.get().hasPerm(sender, ShopPerm.CMD_ALL, ShopPerm.CMD_SETNAME))  {
+        if (!ShopAPI.get().hasPerm(sender, ShopPerm.CMD_ALL, ShopPerm.CMD_OPEN))  {
             Core.getInstance().getLocale().getMessage(ShopLang.NO_PERMISSION).sendPrefixedMessage(p);
             return;
         }

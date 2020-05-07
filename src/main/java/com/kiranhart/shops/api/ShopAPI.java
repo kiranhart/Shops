@@ -168,15 +168,58 @@ public class ShopAPI {
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseItem());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".buyonly", false);
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".discount.enabled", false);
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".discount.amount", 0.0);
         Core.getInstance().getShopsFile().saveConfig();
 
         loadAllShops();
     }
 
     /**
-     * Set the icon of the shop
+     * Check if a shop has a discount on
      *
      * @param name is the shop name
+     * @return if shop has a discount
+     */
+    public boolean hasDiscount(String name) {
+        return Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + name.toLowerCase() + ".discount.enabled");
+    }
+
+    /**
+     * Get shop discount
+     *
+     * @param name is the name of the shop
+     * @return the discount double
+     */
+    public double getDiscount(String name) {
+        return (hasDiscount(name)) ? Core.getInstance().getShopsFile().getConfig().getDouble("shops." + name.toLowerCase() + ".discount.amount") : 0;
+    }
+
+    /**
+     * Used to set a discount price for the shop
+     *
+     * @param name is the name of the shop
+     * @param discount is the discount amount
+     */
+    public void setDiscountAmount(String name, double discount) {
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".discount.amount", discount);
+        Core.getInstance().getShopsFile().saveConfig();
+    }
+
+    /**
+     * Used to toggle the discount feature
+     *
+     * @param name is the name of the shop
+     */
+    public void toggleShopDiscount(String name) {
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".discount.enabled", !hasDiscount(name));
+        Core.getInstance().getShopsFile().saveConfig();
+    }
+
+    /**
+     * Set the icon of the shop
+     *
+     * @param name     is the shop name
      * @param material is the material it's being changed too.
      */
     public void setShopIcon(String name, ItemStack material) {
@@ -469,38 +512,40 @@ public class ShopAPI {
         Core.getInstance().getTransactionFile().saveConfig();
     }
 
+
     /**
      * Get the total amount of items in a player inventory
      *
-     * @param player the player you want to check
-     * @param material  the stack you're searching for
+     * @param player   the player you want to check
+     * @param material the stack you're searching for
      * @return the total amount of items found
      */
-    public int itemCount(Player player, Material material) {
+    public int itemCount(Player player, ItemStack material) {
         int count = 0;
         PlayerInventory inv = player.getInventory();
-        for (ItemStack is : inv.all(material).values()) {
-            if (is != null && is.getType() == material) {
-                count = count + is.getAmount();
+        for (ItemStack content : inv.getContents()) {
+            if (content != null && content.isSimilar(material)) {
+                count += content.getAmount();
             }
         }
+
         return count;
     }
 
     /**
-     * remove an item from inventory
+     * remove an item from inventoryver
      *
      * @param inventory the inventory
-     * @param type is the material type you're targeting
-     * @param amount is how much you wanna remove
+     * @param type      is the material type you're targeting
+     * @param amount    is how much you wanna remove
      */
-    public void removeItems(Inventory inventory, Material type, int amount) {
+    public void removeItems(Inventory inventory, ItemStack type, int amount) {
         if (amount <= 0) return;
         int size = inventory.getSize();
         for (int slot = 0; slot < size; slot++) {
             ItemStack is = inventory.getItem(slot);
             if (is == null) continue;
-            if (type == is.getType()) {
+            if (is.isSimilar(type)) {
                 int newAmount = is.getAmount() - amount;
                 if (newAmount > 0) {
                     is.setAmount(newAmount);
@@ -517,7 +562,7 @@ public class ShopAPI {
     /**
      * Send a discord message
      *
-     * @param p is the player
+     * @param p           is the player
      * @param transaction is the transaction that was just completed
      */
     public void sendDiscordMessage(Player p, Transaction transaction) {
@@ -561,7 +606,7 @@ public class ShopAPI {
     /**
      * Add an item to the player inventory, but drop if inventory is full
      *
-     * @param p is the player
+     * @param p     is the player
      * @param stack is the item
      */
     public void addItemToPlayerInventory(Player p, ItemStack stack) {

@@ -7,6 +7,7 @@ import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.api.events.HartInventoryListener;
 import com.kiranhart.shops.commands.CommandManager;
 import com.kiranhart.shops.shop.Shop;
+import com.kiranhart.shops.shop.ShopUpdate;
 import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.Metrics;
 import com.kiranhart.shops.util.SettingsManager;
@@ -25,6 +26,7 @@ import java.util.LinkedList;
 public final class Core extends JavaPlugin {
 
     private ConsoleCommandSender console = Bukkit.getConsoleSender();
+    private final ShopUpdate.MAJOR_UPDATE currentUpdate = ShopUpdate.MAJOR_UPDATE.DISCOUNT_SYSTEM;
 
     private static Core instance;
     private HartUpdater updater;
@@ -37,6 +39,7 @@ public final class Core extends JavaPlugin {
     private ConfigWrapper settingsFile;
     private ConfigWrapper shopsFile;
     private ConfigWrapper transactionFile;
+    private ConfigWrapper versionFile;
 
     private CommandManager commandManager;
 
@@ -88,6 +91,11 @@ public final class Core extends JavaPlugin {
         this.shops = new LinkedList<>();
         this.transactions = new LinkedList<>();
 
+        console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&bShops&8] &e>>&a Setting up VERSION.yml"));
+        // setup the version file
+        this.versionFile = new ConfigWrapper(this, "", "VERSION.yml");
+        this.versionFile.saveConfig();
+
         console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&bShops&8] &e>>&a Setting up Settings.yml"));
         // setup the settings file
         this.settingsFile = new ConfigWrapper(this, "", "Settings.yml");
@@ -134,6 +142,9 @@ public final class Core extends JavaPlugin {
         console.sendMessage(ChatColor.translateAlternateColorCodes('&', " "));
         console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aLoaded successfully in " + (System.currentTimeMillis() - start) + "ms"));
         console.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b========================================="));
+
+        // Run the Shop Update
+        new ShopUpdate(currentUpdate);
 
         // update checker
         if ((boolean) SettingsManager.get(Settings.USE_UPDATE_CHECKER)) {
@@ -203,6 +214,13 @@ public final class Core extends JavaPlugin {
     }
 
     /**
+     * @return the version file
+     */
+    public ConfigWrapper getVersionFile() {
+        return versionFile;
+    }
+
+    /**
      * @return a hashmap of loaded settings
      */
     public HashMap<Settings, Object> getLoadedSetting() {
@@ -235,5 +253,9 @@ public final class Core extends JavaPlugin {
      */
     public Economy getEconomy() {
         return economy;
+    }
+
+    public ConsoleCommandSender getConsole() {
+        return console;
     }
 }

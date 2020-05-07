@@ -255,6 +255,11 @@ guis:
       lore:
         - ""
         - "&eBuy (x1)&f: &a$%buy_price%"
+    back-item:
+      item: "ARROW"
+      name: "&e&l<< Go Back"
+      lore:
+        - "&7Click to go back to shop selection"
   edit-list:
     title: "&8Select a shop to edit"
     border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
