@@ -15,7 +15,11 @@ public class ShopUpdate {
 
     public enum MAJOR_UPDATE {
 
-        DISCOUNT_SYSTEM("1.0.9");
+        DISCOUNT_SYSTEM("1.0.9"),
+        DISCOUNT_SYSTEM_RELEASE("1.1.0")
+
+
+        ;
 
         private String version;
         MAJOR_UPDATE(String version) {
@@ -35,6 +39,8 @@ public class ShopUpdate {
             // run each update
             EnumSet.allOf(MAJOR_UPDATE.class).forEach(this::runUpdate);
         } else {
+            Core.getInstance().getVersionFile().getConfig().set("version", Core.getInstance().getDescription().getVersion());
+            Core.getInstance().getVersionFile().saveConfig();
             runUpdate(defaultVersion);
         }
     }

@@ -78,6 +78,12 @@ public abstract class HartInventory implements InventoryHolder {
         return this;
     }
 
+    protected void fillRows(Inventory inventory, ItemStack stack, int... rows) {
+        for (int i : rows) {
+            fillRow(inventory, stack, i);
+        }
+    }
+
     protected void fillRow(Inventory inventory, ItemStack stack, int row) {
         switch (row) {
             case 1:

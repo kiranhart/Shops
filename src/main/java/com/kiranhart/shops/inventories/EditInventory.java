@@ -48,6 +48,10 @@ public class EditInventory extends HartInventory {
             p.openInventory(new EditInventory(this.shopName).getInventory());
         }
 
+        if (slot == 24) {
+            p.openInventory(new DiscountInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shopName)).findFirst().get()).getInventory());
+        }
+
         if (slot == 31) {
             ShopAPI.get().removeShop(this.shopName);
             p.closeInventory();
@@ -83,11 +87,15 @@ public class EditInventory extends HartInventory {
         inventory.setItem(29, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.edititems"));
         inventory.setItem(31, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.deleteshop"));
 
+
+
         if (ShopAPI.get().isBuyOnly(this.shopName)) {
             inventory.setItem(22, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.buyonlyon", ShopAPI.get().getShopTitleByName(this.shopName)));
         } else {
             inventory.setItem(22, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.buyonlyoff", ShopAPI.get().getShopTitleByName(this.shopName)));
         }
+
+        inventory.setItem(24, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.discount"));
 
         if (ShopAPI.get().isShopPublic(this.shopName)) {
             inventory.setItem(33, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.shop-enabled", ShopAPI.get().getShopTitleByName(this.shopName)));

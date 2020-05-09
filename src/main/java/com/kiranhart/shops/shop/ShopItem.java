@@ -76,6 +76,9 @@ public class ShopItem {
         }
         ArrayList<String> lore = new ArrayList<>();
         Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
+        if (ShopAPI.get().hasDiscount(this.category)) {
+            Core.getInstance().getConfig().getStringList("discount.discount-lore-addon").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%discount_amount%", String.valueOf(ShopAPI.get().getDiscount(this.category))))));
+        }
         meta.setLore(lore);
         stack.setItemMeta(meta);
 

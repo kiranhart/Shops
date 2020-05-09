@@ -477,6 +477,17 @@ public class ShopAPI {
         return stack;
     }
 
+    public ItemStack createDiscountTotalItem(double total) {
+        ItemStack stack = XMaterial.matchXMaterial(Core.getInstance().getConfig().getString("guis.discount-settings.total.item")).get().parseItem();
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.discount-settings.total.name").replace("%discount_amount%", String.valueOf(total))));
+        List<String> lore = new ArrayList<>();
+        Core.getInstance().getConfig().getStringList("guis.discount-settings.total.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line)));
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
+        return stack;
+    }
+
     /**
      * Used to perform the purchase for a player
      *

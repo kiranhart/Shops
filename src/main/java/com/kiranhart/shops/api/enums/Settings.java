@@ -21,6 +21,7 @@ public enum Settings {
     SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY("save-transaction-to-file-right-away", true),
     SEND_DISCORD_MSG_ON_TRANSACTION("send-discord-msg-on-transaction", true),
     GIVE_RECEIPT_ON_PURCHASE("give-receipt-on-purchaase", true),
+    USE_AUTO_BACK_BUTTONS_ON_SHOP("use-auto-back-buttons-on-shop", true),
 
     INCREMENT_FIRST("increment-first", 1),
     INCREMENT_SECOND("increment-second", 5),

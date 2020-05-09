@@ -80,6 +80,11 @@ anvils:
   setsellprice: "&8Set Sell Price"
   setbuyprice: "&8Set Buy Price"
 
+discount:
+  discount-lore-addon:
+    - ""
+    - "&a&lDISCOUNT APPLIED &f(&e%discount_amount%%&f)"
+
 guis:
   editprice:
     title: "&8Editing Item Prices"
@@ -221,6 +226,21 @@ guis:
       name: "&b%shopname% &cisn't Buy Only"
       lore:
         - "&7Click to &aEnable &7buy only"
+    sellonlyon:
+      item: "LIME_WOOL"
+      name: "&B%shopname% &eis Buy Only"
+      lore:
+        - "&7Click to &cDisable &7Sell only"
+    sellonlyoff:
+      item: "RED_WOOL"
+      name: "&b%shopname% &cisn't Sell Only"
+      lore:
+        - "&7Click to &aEnable &7Sell only"
+    discount:
+      item: "SUNFLOWER"
+      name: "&bDiscount Settings"
+      lore:
+        - "&7Click to edit shop discount options."
     close-item:
       item: "BARRIER"
       name: "&c&lClose"
@@ -283,3 +303,41 @@ guis:
       name: "&b%shopname%"
       lore:
         - "&7Click to edit this shop"
+  discount-settings:
+    title: "&e%shopname% &8Discount Settings"
+    border-item: "LIGHT_BLUE_STAINED_GLASS_PANE"
+    total:
+      item: "SUNFLOWER"
+      name: "&a&l%discount_amount% %"
+      lore:
+        - "&7Click the buttons on the left"
+        - "&7and right to add/remove percentage"
+    add:
+      item: "LIME_STAINED_GLASS_PANE"
+      name: "&a&l+1%"
+      lore:
+        - "&7Click to increase discount by 1%"
+        - "&7Shift-Click to increase discount by 5%"
+        - "&7Right Click to increase discount by 0.5%"
+    remove:
+      item: "RED_STAINED_GLASS_PANE"
+      name: "&a&l-1%"
+      lore:
+        - "&7Click to decrease discount by 1%"
+        - "&7Shift-Click to decrease discount by 5%"
+        - "&7Right Click to decrease discount by 0.5%"
+    discounton:
+      item: "LIME_WOOL"
+      name: "&aShop Discount Enabled"
+      lore:
+        - "&7Click to &cDisable&7 discounts"
+    discountoff:
+      item: "RED_WOOL"
+      name: "&aShop Discount Disabled"
+      lore:
+        - "&7Click to &eEnable&7 discounts"
+    close-item:
+      item: "BARRIER"
+      name: "&c&lClose"
+      lore:
+        - "&7Click to close inventory"

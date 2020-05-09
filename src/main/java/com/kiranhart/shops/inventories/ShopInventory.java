@@ -92,34 +92,38 @@ public class ShopInventory extends HartInventory {
 
         int oldSize = this.defaultSize;
 
-        if (this.defaultSize == 9) {
-            this.defaultSize = 18;
-        } else if (this.defaultSize == 18) {
-            this.defaultSize = 27;
-        } else if(this.defaultSize == 27) {
-            this.defaultSize = 36;
-        } else if(this.defaultSize == 36) {
-            this.defaultSize = 45;
-        } else if (this.defaultSize == 45) {
-            this.defaultSize = 54;
+        if ((boolean) SettingsManager.get(Settings.USE_AUTO_BACK_BUTTONS_ON_SHOP)) {
+            if (this.defaultSize == 9) {
+                this.defaultSize = 18;
+            } else if (this.defaultSize == 18) {
+                this.defaultSize = 27;
+            } else if (this.defaultSize == 27) {
+                this.defaultSize = 36;
+            } else if (this.defaultSize == 36) {
+                this.defaultSize = 45;
+            } else if (this.defaultSize == 45) {
+                this.defaultSize = 54;
+            }
         }
 
         Inventory inventory = Bukkit.createInventory(this, this.defaultSize, this.defaultTitle);
         chunks.get(this.page - 1).forEach(shopItem -> inventory.setItem(inventory.firstEmpty(), shopItem.getItem()));
 
-       // 9 18 27 36 45 54
-        if (oldSize == 9) {
-            fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 2);
-            inventory.setItem(13, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
-        } else if (oldSize == 18) {
-            fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 3);
-            inventory.setItem(22, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
-        } else if (oldSize == 27) {
-            fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 4);
-            inventory.setItem(31, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
-        } else if (oldSize == 36) {
-            fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 5);
-            inventory.setItem(41, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+        // 9 18 27 36 45 54
+        if ((boolean) SettingsManager.get(Settings.USE_AUTO_BACK_BUTTONS_ON_SHOP)) {
+            if (oldSize == 9) {
+                fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 2);
+                inventory.setItem(13, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+            } else if (oldSize == 18) {
+                fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 3);
+                inventory.setItem(22, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+            } else if (oldSize == 27) {
+                fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 4);
+                inventory.setItem(31, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+            } else if (oldSize == 36) {
+                fillRow(inventory, XMaterial.BLACK_STAINED_GLASS_PANE.parseItem(), 5);
+                inventory.setItem(41, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+            }
         }
 
 
@@ -129,7 +133,9 @@ public class ShopInventory extends HartInventory {
             inventory.setItem(49, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.close-item"));
             inventory.setItem(50, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.next-page"));
             // back item
-            inventory.setItem(45, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+            if ((boolean) SettingsManager.get(Settings.USE_AUTO_BACK_BUTTONS_ON_SHOP)) {
+                inventory.setItem(45, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.shop.back-item"));
+            }
         }
 
         return inventory;

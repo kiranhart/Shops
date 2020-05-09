@@ -129,17 +129,26 @@ public class PurchaseInventory extends HartInventory {
                     p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
                     break;
                 case 31:
-                    if (Core.getInstance().getEconomy().getBalance(p) >= shopItem.getBuyPrice() * this.total) {
+
+                    double discountPrice = shopItem.getBuyPrice() * this.total;
+
+                    if (ShopAPI.get().hasDiscount(shop.getName())) {
+                        double discountAmount = ShopAPI.get().getDiscount(shop.getName());
+                        double discountTotal = discountPrice * (discountAmount / 100);
+                        discountPrice -= discountTotal;
+                    }
+
+                    if (Core.getInstance().getEconomy().getBalance(p) >= discountPrice) {
 
                         ShopItemPurchaseEvent purchaseEvent = new ShopItemPurchaseEvent(p, this.shopItem);
                         Bukkit.getPluginManager().callEvent(purchaseEvent);
                         if (!purchaseEvent.isCancelled()) {
 
-                            Core.getInstance().getEconomy().withdrawPlayer(p, shopItem.getBuyPrice() * this.total);
+                            Core.getInstance().getEconomy().withdrawPlayer(p, discountPrice);
                             for (int i = 0; i< this.total; i++) {
                                 ShopAPI.get().addItemToPlayerInventory(p, shopItem.getMaterial());
                             }
-                            Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", shopItem.getBuyPrice() * this.total).sendPrefixedMessage(p);
+                            Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", discountPrice).sendPrefixedMessage(p);
                             Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
 
                             // save transaction depending on settings
