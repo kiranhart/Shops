@@ -16,7 +16,8 @@ public class ShopUpdate {
     public enum MAJOR_UPDATE {
 
         DISCOUNT_SYSTEM("1.0.9"),
-        DISCOUNT_SYSTEM_RELEASE("1.1.0")
+        DISCOUNT_SYSTEM_RELEASE("1.1.0"),
+        SELL_ONLY_SYSTEM("1.1.1")
 
 
         ;
@@ -56,7 +57,19 @@ public class ShopUpdate {
                 });
                 Core.getInstance().getShopsFile().saveConfig();
             }
-            Core.getInstance().getConsole().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&bShops&8] &e>>&a Finished Shop Update: &b" + update.name() + "&f(&6" + update.getVersion() + "&f)"));
         }
+
+        if (update == MAJOR_UPDATE.SELL_ONLY_SYSTEM) {
+            if (Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops") != null) {
+                Core.getInstance().getShopsFile().getConfig().getConfigurationSection("shops").getKeys(false).forEach(shop -> {
+                    if (!Core.getInstance().getShopsFile().getConfig().contains("shops." + shop  + ".sellonly")) {
+                        Core.getInstance().getShopsFile().getConfig().set("shops." + shop  + ".sellonly", false);
+                    }
+                });
+                Core.getInstance().getShopsFile().saveConfig();
+            }
+        }
+
+        Core.getInstance().getConsole().sendMessage(ChatColor.translateAlternateColorCodes('&', "&8[&bShops&8] &e>>&a Finished Shop Update: &b" + update.name() + "&f(&6" + update.getVersion() + "&f)"));
     }
 }

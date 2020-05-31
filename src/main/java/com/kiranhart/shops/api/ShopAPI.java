@@ -168,6 +168,7 @@ public class ShopAPI {
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".icon", XMaterial.NETHER_STAR.parseItem());
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".public", false);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".buyonly", false);
+        Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".sellonly", false);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".discount.enabled", false);
         Core.getInstance().getShopsFile().getConfig().set("shops." + name.toLowerCase() + ".discount.amount", 0.0);
         Core.getInstance().getShopsFile().saveConfig();
@@ -266,6 +267,16 @@ public class ShopAPI {
      */
     public boolean isBuyOnly(String name) {
         return Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + name.toLowerCase() + ".buyonly");
+    }
+
+    /**
+     * Check if a shop is sell only
+     *
+     * @param name is the name of the shop
+     * @return whether or not the shop is buy only
+     */
+    public boolean isSellOnly(String name) {
+        return Core.getInstance().getShopsFile().getConfig().getBoolean("shops." + name.toLowerCase() + ".sellonly");
     }
 
     /**

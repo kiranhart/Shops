@@ -72,10 +72,10 @@ public class ShopItem {
         ItemStack stack = item.clone();
         ItemMeta meta = stack.getItemMeta();
         if (!meta.hasDisplayName()) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.name" : "guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.name" : (ShopAPI.get().isSellOnly(this.category)) ?  "guis.shop.purchase-item-sell-only.name" : "guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
         }
         ArrayList<String> lore = new ArrayList<>();
-        Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
+        Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : (ShopAPI.get().isSellOnly(this.category)) ?  "guis.shop.purchase-item-sell-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
         if (ShopAPI.get().hasDiscount(this.category)) {
             Core.getInstance().getConfig().getStringList("discount.discount-lore-addon").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%discount_amount%", String.valueOf(ShopAPI.get().getDiscount(this.category))))));
         }
@@ -92,10 +92,10 @@ public class ShopItem {
         ItemStack stack = item.clone();
         ItemMeta meta = stack.getItemMeta();
         if (!meta.hasDisplayName()) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-ony.name" : "guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-ony.name" : (ShopAPI.get().isSellOnly(this.category)) ?  "guis.shop.purchase-item-sell-only.name" : "guis.shop.purchase-item.name").replace("%material_name%", StringUtils.capitalize(item.getType().name().toLowerCase().replace("_", " ")))));
         }
         ArrayList<String> lore = new ArrayList<>();
-        Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
+        Core.getInstance().getConfig().getStringList((ShopAPI.get().isBuyOnly(this.category)) ? "guis.shop.purchase-item-buy-only.lore" : (ShopAPI.get().isSellOnly(this.category)) ?  "guis.shop.purchase-item-sell-only.lore" : "guis.shop.purchase-item.lore").forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line.replace("%buy_price%", NumberFormat.getInstance().format(buyPrice)).replace("%sell_price%", NumberFormat.getInstance().format(sellPrice)))));
         for (String s : add) lore.add(ChatColor.translateAlternateColorCodes('&', s));
         meta.setLore(lore);
         stack.setItemMeta(meta);

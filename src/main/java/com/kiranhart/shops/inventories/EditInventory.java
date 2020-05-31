@@ -42,6 +42,12 @@ public class EditInventory extends HartInventory {
             p.openInventory(new EditInventory(this.shopName).getInventory());
         }
 
+        if (slot == 20) {
+            Core.getInstance().getShopsFile().getConfig().set("shops." + this.shopName.toLowerCase() + ".sellonly", !ShopAPI.get().isSellOnly(this.shopName));
+            Core.getInstance().getShopsFile().saveConfig();
+            p.openInventory(new EditInventory(this.shopName).getInventory());
+        }
+
         if (slot == 22) {
             Core.getInstance().getShopsFile().getConfig().set("shops." + this.shopName.toLowerCase() + ".buyonly", !ShopAPI.get().isBuyOnly(this.shopName));
             Core.getInstance().getShopsFile().saveConfig();
@@ -93,6 +99,12 @@ public class EditInventory extends HartInventory {
             inventory.setItem(22, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.buyonlyon", ShopAPI.get().getShopTitleByName(this.shopName)));
         } else {
             inventory.setItem(22, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.buyonlyoff", ShopAPI.get().getShopTitleByName(this.shopName)));
+        }
+
+        if (ShopAPI.get().isSellOnly(this.shopName)) {
+            inventory.setItem(20, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.sellonlyon", ShopAPI.get().getShopTitleByName(this.shopName)));
+        } else {
+            inventory.setItem(20, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.sellonlyoff", ShopAPI.get().getShopTitleByName(this.shopName)));
         }
 
         inventory.setItem(24, ShopAPI.get().loadFullItemFromConfig(Core.getInstance().getConfig(), "guis.edit-shop.discount"));

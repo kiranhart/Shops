@@ -45,188 +45,199 @@ public class PurchaseInventory extends HartInventory {
     public void onClick(InventoryClickEvent e, int slot) {
         e.setCancelled(true);
         Player p = (Player) e.getWhoClicked();
-        Transaction transaction;
 
         try {
-            switch (slot) {
-                case 20:
-                    if (e.getClick() == ClickType.LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_FIRST)).getInventory());
-                    }
 
-                    if (e.getClick() == ClickType.SHIFT_LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 64).getInventory());
-                    }
-                    break;
-                case 29:
-                    if (e.getClick() == ClickType.LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_SECOND)).getInventory());
-                    }
+            if (slot == 20) {
+                if (e.getClick() == ClickType.LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_FIRST)).getInventory());
+                }
 
-                    if (e.getClick() == ClickType.SHIFT_LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 64).getInventory());
-                    }
-                    break;
-                case 24:
-                    if (e.getClick() == ClickType.LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_FIRST)).getInventory());
-                    }
-
-                    if (e.getClick() == ClickType.SHIFT_LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 64).getInventory());
-                    }
-                    break;
-                case 33:
-                    if (e.getClick() == ClickType.LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_SECOND)).getInventory());
-                    }
-
-                    if (e.getClick() == ClickType.SHIFT_LEFT) {
-                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 64).getInventory());
-                    }
-                    break;
-                case 30:
-                    if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
-                        return;
-                    }
-
-                    if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
-                        return;
-                    }
-
-                    int amount = ShopAPI.get().itemCount(p, this.shopItem.getMaterial());
-
-                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), amount);
-                    p.updateInventory();
-
-                    Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
-
-                    Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * amount).sendPrefixedMessage(p);
-                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", amount).sendPrefixedMessage(p);
-
-                    // save transaction depending on settings
-                    transaction = new Transaction(
-                            this.shop,
-                            this.shopItem,
-                            p.getUniqueId(),
-                            amount,
-                            Transaction.TransactionType.SOLD);
-
-                    if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
-                        ShopAPI.get().sendDiscordMessage(p, transaction);
-                    }
-
-                    if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                        ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p,transaction).getReceipt());
-                    }
-
-                    if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
-                        ShopAPI.get().saveTransactions(transaction);
-                    } else {
-                        Core.getInstance().getTransactions().add(transaction);
-                    }
-
-                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
-                    break;
-                case 31:
-
-                    double discountPrice = shopItem.getBuyPrice() * this.total;
-
-                    if (ShopAPI.get().hasDiscount(shop.getName())) {
-                        double discountAmount = ShopAPI.get().getDiscount(shop.getName());
-                        double discountTotal = discountPrice * (discountAmount / 100);
-                        discountPrice -= discountTotal;
-                    }
-
-                    if (Core.getInstance().getEconomy().getBalance(p) >= discountPrice) {
-
-                        ShopItemPurchaseEvent purchaseEvent = new ShopItemPurchaseEvent(p, this.shopItem);
-                        Bukkit.getPluginManager().callEvent(purchaseEvent);
-                        if (!purchaseEvent.isCancelled()) {
-
-                            Core.getInstance().getEconomy().withdrawPlayer(p, discountPrice);
-                            for (int i = 0; i< this.total; i++) {
-                                ShopAPI.get().addItemToPlayerInventory(p, shopItem.getMaterial());
-                            }
-                            Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", discountPrice).sendPrefixedMessage(p);
-                            Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
-
-                            // save transaction depending on settings
-                            transaction = new Transaction(
-                                    this.shop,
-                                    this.shopItem,
-                                    p.getUniqueId(),
-                                    this.total,
-                                    Transaction.TransactionType.BOUGHT);
-
-                            if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
-                                ShopAPI.get().sendDiscordMessage(p, transaction);
-                            }
-
-                            if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                                ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p,transaction).getReceipt());
-                            }
-
-                            if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
-                                ShopAPI.get().saveTransactions(transaction);
-                            } else {
-                                Core.getInstance().getTransactions().add(transaction);
-                            }
-
-                            p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
-                        }
-                    }
-                    break;
-                case 32:
-                    if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
-                        return;
-                    }
-
-                    if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
-                        return;
-                    }
-
-                    int finalRemove = (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) < this.total) ? ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) : this.total;
-
-                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), finalRemove);
-                    p.updateInventory();
-
-                    Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * finalRemove);
-
-                    Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * finalRemove).sendPrefixedMessage(p);
-                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", finalRemove).sendPrefixedMessage(p);
-
-                    // save transaction depending on settings
-                    transaction = new Transaction(
-                            this.shop,
-                            this.shopItem,
-                            p.getUniqueId(),
-                            finalRemove,
-                            Transaction.TransactionType.SOLD);
-
-                    if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
-                        ShopAPI.get().sendDiscordMessage(p, transaction);
-                    }
-
-                    if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                        ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p,transaction).getReceipt());
-                    }
-
-                    if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
-                        ShopAPI.get().saveTransactions(transaction);
-                    } else {
-                        Core.getInstance().getTransactions().add(transaction);
-                    }
-
-                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
-                    break;
-                case 49:
-                    p.closeInventory();
-                    break;
-                case 45:
-                    p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shop.getName())).findFirst().get()).getInventory());
-                    break;
+                if (e.getClick() == ClickType.SHIFT_LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 64).getInventory());
+                }
             }
+
+            if (slot == 29) {
+                if (e.getClick() == ClickType.LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + (int) SettingsManager.get(Settings.INCREMENT_SECOND)).getInventory());
+                }
+
+                if (e.getClick() == ClickType.SHIFT_LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total + 64).getInventory());
+                }
+            }
+
+            if (slot == 24) {
+                if (e.getClick() == ClickType.LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_FIRST)).getInventory());
+                }
+
+                if (e.getClick() == ClickType.SHIFT_LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 64).getInventory());
+                }
+            }
+
+            if (slot == 33) {
+                if (e.getClick() == ClickType.LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - (int) SettingsManager.get(Settings.DECREMENT_SECOND)).getInventory());
+                }
+
+                if (e.getClick() == ClickType.SHIFT_LEFT) {
+                    p.openInventory(new PurchaseInventory(this.shop, this.shopItem, this.total - 64).getInventory());
+                }
+            }
+
+            if (slot == 30) {
+                if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
+                    return;
+                }
+
+                if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
+                    return;
+                }
+
+                int amount = ShopAPI.get().itemCount(p, this.shopItem.getMaterial());
+
+                ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), amount);
+                p.updateInventory();
+
+                Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
+
+                Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * amount).sendPrefixedMessage(p);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", amount).sendPrefixedMessage(p);
+
+                // save transaction depending on settings
+                Transaction transaction = new Transaction(
+                        this.shop,
+                        this.shopItem,
+                        p.getUniqueId(),
+                        amount,
+                        Transaction.TransactionType.SOLD);
+
+                if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                    ShopAPI.get().sendDiscordMessage(p, transaction);
+                }
+
+                if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                    ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
+                }
+
+                if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                    ShopAPI.get().saveTransactions(transaction);
+                } else {
+                    Core.getInstance().getTransactions().add(transaction);
+                }
+
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
+            }
+
+            if (slot == 31) {
+
+                if (ShopAPI.get().isSellOnly(this.shop.getName())) {
+                    return;
+                }
+
+                double discountPrice = shopItem.getBuyPrice() * this.total;
+
+                if (ShopAPI.get().hasDiscount(shop.getName())) {
+                    double discountAmount = ShopAPI.get().getDiscount(shop.getName());
+                    double discountTotal = discountPrice * (discountAmount / 100);
+                    discountPrice -= discountTotal;
+                }
+
+                if (Core.getInstance().getEconomy().getBalance(p) >= discountPrice) {
+
+                    ShopItemPurchaseEvent purchaseEvent = new ShopItemPurchaseEvent(p, this.shopItem);
+                    Bukkit.getPluginManager().callEvent(purchaseEvent);
+                    if (!purchaseEvent.isCancelled()) {
+
+                        Core.getInstance().getEconomy().withdrawPlayer(p, discountPrice);
+                        for (int i = 0; i < this.total; i++) {
+                            ShopAPI.get().addItemToPlayerInventory(p, shopItem.getMaterial());
+                        }
+                        Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", discountPrice).sendPrefixedMessage(p);
+                        Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
+
+                        // save transaction depending on settings
+                        Transaction transaction = new Transaction(
+                                this.shop,
+                                this.shopItem,
+                                p.getUniqueId(),
+                                this.total,
+                                Transaction.TransactionType.BOUGHT);
+
+                        if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                            ShopAPI.get().sendDiscordMessage(p, transaction);
+                        }
+
+                        if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                            ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
+                        }
+
+                        if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                            ShopAPI.get().saveTransactions(transaction);
+                        } else {
+                            Core.getInstance().getTransactions().add(transaction);
+                        }
+
+                        p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
+                    }
+                }
+            }
+
+            if (slot == 32) {
+                if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
+                    return;
+                }
+
+                if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
+                    return;
+                }
+
+                int finalRemove = (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) < this.total) ? ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) : this.total;
+
+                ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), finalRemove);
+                p.updateInventory();
+
+                Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * finalRemove);
+
+                Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * finalRemove).sendPrefixedMessage(p);
+                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", finalRemove).sendPrefixedMessage(p);
+
+                // save transaction depending on settings
+                Transaction transaction = new Transaction(
+                        this.shop,
+                        this.shopItem,
+                        p.getUniqueId(),
+                        finalRemove,
+                        Transaction.TransactionType.SOLD);
+
+                if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                    ShopAPI.get().sendDiscordMessage(p, transaction);
+                }
+
+                if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                    ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
+                }
+
+                if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                    ShopAPI.get().saveTransactions(transaction);
+                } else {
+                    Core.getInstance().getTransactions().add(transaction);
+                }
+
+                p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
+            }
+
+            if (slot == 49) {
+                p.closeInventory();
+            }
+
+            if (slot == 45) {
+                p.openInventory(new ShopInventory(Core.getInstance().getShops().stream().filter(shop -> shop.getName().equalsIgnoreCase(this.shop.getName())).findFirst().get()).getInventory());
+            }
+
         } catch (Exception ex) {
             Debugger.report(ex, false);
         }

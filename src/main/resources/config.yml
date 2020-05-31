@@ -228,7 +228,7 @@ guis:
         - "&7Click to &aEnable &7buy only"
     sellonlyon:
       item: "LIME_WOOL"
-      name: "&B%shopname% &eis Buy Only"
+      name: "&B%shopname% &eis Sell Only"
       lore:
         - "&7Click to &cDisable &7Sell only"
     sellonlyoff:
@@ -275,6 +275,12 @@ guis:
       lore:
         - ""
         - "&eBuy (x1)&f: &a$%buy_price%"
+    purchase-item-sell-only:
+      #the custom name will only activate if the item doesn't already have a custom name.
+      name: "&e%material_name%"
+      lore:
+        - ""
+        - "&eSell (x1)&f: &a$%sell_price%"
     back-item:
       item: "ARROW"
       name: "&e&l<< Go Back"
