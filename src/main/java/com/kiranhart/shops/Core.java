@@ -26,7 +26,7 @@ import java.util.LinkedList;
 public final class Core extends JavaPlugin {
 
     private ConsoleCommandSender console = Bukkit.getConsoleSender();
-    private final ShopUpdate.MAJOR_UPDATE currentUpdate = ShopUpdate.MAJOR_UPDATE.SELL_ONLY_SYSTEM;
+    private final ShopUpdate.MAJOR_UPDATE currentUpdate = ShopUpdate.MAJOR_UPDATE.SUPPORT_1_16;
 
     private static Core instance;
     private HartUpdater updater;

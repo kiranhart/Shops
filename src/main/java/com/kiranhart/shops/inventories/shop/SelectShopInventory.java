@@ -1,9 +1,10 @@
-package com.kiranhart.shops.inventories;
+package com.kiranhart.shops.inventories.shop;
 
 import com.google.common.collect.Lists;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
+import com.kiranhart.shops.inventories.HartInventory;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.util.SettingsManager;
 import com.kiranhart.shops.util.helpers.NBTEditor;

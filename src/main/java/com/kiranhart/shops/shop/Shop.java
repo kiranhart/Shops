@@ -1,6 +1,5 @@
 package com.kiranhart.shops.shop;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.util.helpers.NBTEditor;
@@ -13,6 +12,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.UUID;
+
+;
 
 /**
  * The current file has been created by Kiran Hart

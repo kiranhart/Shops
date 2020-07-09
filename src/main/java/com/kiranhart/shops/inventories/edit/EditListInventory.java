@@ -1,16 +1,17 @@
-package com.kiranhart.shops.inventories;
+package com.kiranhart.shops.inventories.edit;
 /*
     Created by Kiran Hart
     Date: February / 10 / 2020
     Time: 10:31 a.m.
 */
 
-import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
+import com.kiranhart.shops.inventories.HartInventory;
 import com.kiranhart.shops.util.helpers.NBTEditor;
+import com.kiranhart.shops.util.helpers.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,6 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+
+;
 
 public class EditListInventory extends HartInventory {
 

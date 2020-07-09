@@ -1,18 +1,19 @@
-package com.kiranhart.shops.inventories;
+package com.kiranhart.shops.inventories.shop;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.BorderNumbers;
 import com.kiranhart.shops.api.enums.Settings;
-import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.events.ShopItemPurchaseEvent;
+import com.kiranhart.shops.api.statics.ShopLang;
+import com.kiranhart.shops.inventories.HartInventory;
 import com.kiranhart.shops.shop.Receipt;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.ShopItem;
 import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.Debugger;
 import com.kiranhart.shops.util.SettingsManager;
+import com.kiranhart.shops.util.helpers.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,6 +21,8 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+;
 
 /**
  * The current file has been created by Kiran Hart
@@ -138,6 +141,16 @@ public class PurchaseInventory extends HartInventory {
                     return;
                 }
 
+                // TODO FILTER
+                if (p.getInventory().firstEmpty() == -1 && !((boolean) SettingsManager.get(Settings.ALLOW_PURCHASE_WITH_FULL_INVENTORY))) {
+                    return;
+                }
+
+                if (this.total > (int) SettingsManager.get(Settings.MAX_PURCHASE_ITEMS)) {
+                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_MAX_PURCHASE_AMOUNT).processPlaceholder("maxbuyamount", SettingsManager.get(Settings.MAX_PURCHASE_ITEMS)).sendPrefixedMessage(p);
+                    return;
+                }
+
                 double discountPrice = shopItem.getBuyPrice() * this.total;
 
                 if (ShopAPI.get().hasDiscount(shop.getName())) {
@@ -153,9 +166,11 @@ public class PurchaseInventory extends HartInventory {
                     if (!purchaseEvent.isCancelled()) {
 
                         Core.getInstance().getEconomy().withdrawPlayer(p, discountPrice);
-                        for (int i = 0; i < this.total; i++) {
-                            ShopAPI.get().addItemToPlayerInventory(p, shopItem.getMaterial());
-                        }
+//                        for (int i = 0; i < this.total; i++) {
+                        ItemStack ap = shopItem.getMaterial().clone();
+                        ap.setAmount(this.total);
+                            ShopAPI.get().addItemToPlayerInventory(p, ap);
+//                        }
                         Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", discountPrice).sendPrefixedMessage(p);
                         Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
 

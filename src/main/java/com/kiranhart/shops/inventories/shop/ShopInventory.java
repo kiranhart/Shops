@@ -1,16 +1,17 @@
-package com.kiranhart.shops.inventories;
+package com.kiranhart.shops.inventories.shop;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.enums.Settings;
 import com.kiranhart.shops.api.statics.ShopLang;
 import com.kiranhart.shops.api.statics.ShopPerm;
+import com.kiranhart.shops.inventories.HartInventory;
 import com.kiranhart.shops.shop.Shop;
 import com.kiranhart.shops.shop.ShopItem;
 import com.kiranhart.shops.util.SettingsManager;
 import com.kiranhart.shops.util.helpers.NBTEditor;
+import com.kiranhart.shops.util.helpers.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,6 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+
+;
 
 /**
  * The current file has been created by Kiran Hart

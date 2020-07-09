@@ -17,7 +17,8 @@ public class ShopUpdate {
 
         DISCOUNT_SYSTEM("1.0.9"),
         DISCOUNT_SYSTEM_RELEASE("1.1.0"),
-        SELL_ONLY_SYSTEM("1.1.1")
+        SELL_ONLY_SYSTEM("1.1.1"),
+        SUPPORT_1_16("1.1.4")
 
 
         ;

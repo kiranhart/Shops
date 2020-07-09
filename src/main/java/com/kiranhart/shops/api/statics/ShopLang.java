@@ -14,6 +14,7 @@ public class ShopLang {
     public static final String PLAYER_ONLY = "player-only";
     public static final String NOT_A_NUMBER = "not-a-number";
     public static final String AIR = "air";
+    public static final String PLAYER_OFFLINE = "playeroffline";
 
     // money
     public static final String MONEY_ADD = "money.add";
@@ -35,6 +36,7 @@ public class ShopLang {
     public static final String SHOP_BUY_ONLY_ON = "shop.buyonlyon";
     public static final String SHOP_BUY_ONLY_OFF = "shop.buyonlyoff";
     public static final String SHOP_SETNAME = "shop.setname";
+    public static final String SHOP_MAX_PURCHASE_AMOUNT = "shop.maxpurchaseamount";
 
     // commands
     public static final String COMMAND_INVALID = "cmd.invalid";

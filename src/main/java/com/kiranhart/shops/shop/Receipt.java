@@ -1,17 +1,18 @@
 package com.kiranhart.shops.shop;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.util.helpers.NBTEditor;
+import com.kiranhart.shops.util.helpers.XMaterial;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+;
 
 /**
  * The current file has been created by Kiran Hart

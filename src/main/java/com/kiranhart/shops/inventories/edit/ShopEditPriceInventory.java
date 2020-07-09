@@ -1,16 +1,20 @@
-package com.kiranhart.shops.inventories;
+package com.kiranhart.shops.inventories.edit;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.ShopAPI;
 import com.kiranhart.shops.api.statics.ShopLang;
+import com.kiranhart.shops.inventories.HartInventory;
+import com.kiranhart.shops.inventories.shop.ShopContentsInventory;
 import com.kiranhart.shops.shop.Shop;
+import com.kiranhart.shops.util.helpers.XMaterial;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+
+;
 
 /**
  * The current file has been created by Kiran Hart

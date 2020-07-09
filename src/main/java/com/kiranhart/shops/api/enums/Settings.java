@@ -28,6 +28,11 @@ public enum Settings {
 
     DECREMENT_FIRST("decrement-first", 1),
     DECREMENT_SECOND("decrement-second", 5),
+
+    MAX_PURCHASE_ITEMS("max-purchase-items", 1200),
+    ALLOW_PURCHASE_WITH_FULL_INVENTORY("allow-purchase-with-full-inventory", false),
+
+
     ;
 
     private String setting;

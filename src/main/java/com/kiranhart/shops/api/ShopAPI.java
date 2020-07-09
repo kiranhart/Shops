@@ -1,6 +1,5 @@
 package com.kiranhart.shops.api;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.kiranhart.shops.Core;
 import com.kiranhart.shops.api.enums.DefaultFontInfo;
 import com.kiranhart.shops.shop.Shop;
@@ -8,6 +7,7 @@ import com.kiranhart.shops.shop.ShopItem;
 import com.kiranhart.shops.shop.Transaction;
 import com.kiranhart.shops.util.helpers.DiscordWebhook;
 import com.kiranhart.shops.util.helpers.NBTEditor;
+import com.kiranhart.shops.util.helpers.XMaterial;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,12 +20,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+;
 
 /**
  * The current file has been created by Kiran Hart
@@ -633,6 +640,64 @@ public class ShopAPI {
      */
     public void addItemToPlayerInventory(Player p, ItemStack stack) {
         HashMap<Integer, ItemStack> toDrop = p.getInventory().addItem(stack);
-        toDrop.values().forEach(item -> p.getWorld().dropItemNaturally(p.getLocation(), item));
+        long time = System.currentTimeMillis();
+        toDrop.values().forEach(item -> {
+           p.getWorld().dropItemNaturally(p.getLocation(), item);
+        });
+//        Core.getInstance().getShopsFile().saveConfig();
+    }
+
+    /**
+     * A method to serialize an {@link ItemStack} list to Base64 String.
+     *
+     * @param items to turn into a Base64 String.
+     * @return Base64 string of the items.
+     */
+    public String toBase64(List<ItemStack> items) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            // Write the size of the inventory
+            dataOutput.writeInt(items.size());
+
+            // Save every element in the list
+            for (ItemStack item : items)
+                dataOutput.writeObject(item);
+
+            // Serialize that array
+            dataOutput.close();
+            return Base64Coder.encodeLines(outputStream.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a list of ItemStacks from Base64 string.
+     *
+     * @param data Base64 string to convert to ItemStack list.
+     * @return ItemStack array created from the Base64 string.
+     */
+    public List<ItemStack> fromBase64(String data) {
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+            int length = dataInput.readInt();
+            List<ItemStack> items = new ArrayList<>();
+
+            // Read the serialized itemstack list
+            for (int i = 0; i < length; i++)
+                items.add((ItemStack) dataInput.readObject());
+
+            dataInput.close();
+            return items;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
