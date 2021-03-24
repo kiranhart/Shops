@@ -39,7 +39,7 @@ public class PurchaseInventory extends HartInventory {
     public PurchaseInventory(Shop shop, ShopItem shopItem, int total) {
         this.shop = shop;
         this.shopItem = shopItem;
-        this.total = (total <= 0) ? 1 : total;
+        this.total = (total <= 0) ? shopItem.getMaterial().getAmount() : total;
         this.defaultTitle = ChatColor.translateAlternateColorCodes('&', Core.getInstance().getConfig().getString("guis.purchase-inventory.title"));
         this.defaultSize = 54;
     }
@@ -92,46 +92,47 @@ public class PurchaseInventory extends HartInventory {
             }
 
             if (slot == 30) {
-                if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
-                    return;
-                }
+                Bukkit.getServer().getScheduler().runTaskAsynchronously(Core.getInstance(), () -> {
+                    if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
+                        return;
+                    }
 
-                if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
-                    return;
-                }
+                    if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
+                        return;
+                    }
 
-                int amount = ShopAPI.get().itemCount(p, this.shopItem.getMaterial());
+                    int amount = ShopAPI.get().itemCount(p, this.shopItem.getMaterial());
 
-                ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), amount);
-                p.updateInventory();
+                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), amount);
+                    p.updateInventory();
 
-                Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
+                    Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * amount);
 
-                Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * amount).sendPrefixedMessage(p);
-                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", amount).sendPrefixedMessage(p);
+                    Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * amount).sendPrefixedMessage(p);
+                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", amount).sendPrefixedMessage(p);
 
-                // save transaction depending on settings
-                Transaction transaction = new Transaction(
-                        this.shop,
-                        this.shopItem,
-                        p.getUniqueId(),
-                        amount,
-                        Transaction.TransactionType.SOLD);
+                    // save transaction depending on settings
+                    Transaction transaction = new Transaction(
+                            this.shop,
+                            this.shopItem,
+                            p.getUniqueId(),
+                            amount,
+                            Transaction.TransactionType.SOLD);
 
-                if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
-                    ShopAPI.get().sendDiscordMessage(p, transaction);
-                }
+                    if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                        ShopAPI.get().sendDiscordMessage(p, transaction);
+                    }
 
-                if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                    ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
-                }
+                    if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                        ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
+                    }
 
-                if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
-                    ShopAPI.get().saveTransactions(transaction);
-                } else {
-                    Core.getInstance().getTransactions().add(transaction);
-                }
-
+                    if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                        ShopAPI.get().saveTransactions(transaction);
+                    } else {
+                        Core.getInstance().getTransactions().add(transaction);
+                    }
+                });
                 p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
             }
 
@@ -151,50 +152,53 @@ public class PurchaseInventory extends HartInventory {
                     return;
                 }
 
-                double discountPrice = shopItem.getBuyPrice() * this.total;
-
-                if (ShopAPI.get().hasDiscount(shop.getName())) {
-                    double discountAmount = ShopAPI.get().getDiscount(shop.getName());
-                    double discountTotal = discountPrice * (discountAmount / 100);
-                    discountPrice -= discountTotal;
-                }
-
-                if (Core.getInstance().getEconomy().getBalance(p) >= discountPrice) {
+                if (Core.getInstance().getEconomy().getBalance(p) >= shopItem.getBuyPrice() * (shopItem.getMaterial().getAmount() > 1 ? 1 : this.total)) {
 
                     ShopItemPurchaseEvent purchaseEvent = new ShopItemPurchaseEvent(p, this.shopItem);
                     Bukkit.getPluginManager().callEvent(purchaseEvent);
                     if (!purchaseEvent.isCancelled()) {
 
-                        Core.getInstance().getEconomy().withdrawPlayer(p, discountPrice);
+                        Bukkit.getServer().getScheduler().runTaskAsynchronously(Core.getInstance(), () -> {
+
+                            double discountPrice = shopItem.getBuyPrice() * (shopItem.getMaterial().getAmount() > 1 ? 1: this.total);
+
+                            if (ShopAPI.get().hasDiscount(shop.getName())) {
+                                double discountAmount = ShopAPI.get().getDiscount(shop.getName());
+                                double discountTotal = discountPrice * (discountAmount / 100);
+                                discountPrice -= discountTotal;
+                            }
+
+                            Core.getInstance().getEconomy().withdrawPlayer(p, discountPrice);
 //                        for (int i = 0; i < this.total; i++) {
-                        ItemStack ap = shopItem.getMaterial().clone();
-                        ap.setAmount(this.total);
+                            ItemStack ap = shopItem.getMaterial().clone();
+                            ap.setAmount(shopItem.getMaterial().getAmount() > 1 ? shopItem.getMaterial().getAmount() : this.total);
                             ShopAPI.get().addItemToPlayerInventory(p, ap);
 //                        }
-                        Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", discountPrice).sendPrefixedMessage(p);
-                        Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
+                            Core.getInstance().getLocale().getMessage(ShopLang.MONEY_REMOVE).processPlaceholder("amount", discountPrice).sendPrefixedMessage(p);
+                            Core.getInstance().getLocale().getMessage(ShopLang.SHOP_BOUGHT).processPlaceholder("total", this.total).sendPrefixedMessage(p);
 
-                        // save transaction depending on settings
-                        Transaction transaction = new Transaction(
-                                this.shop,
-                                this.shopItem,
-                                p.getUniqueId(),
-                                this.total,
-                                Transaction.TransactionType.BOUGHT);
+                            // save transaction depending on settings
+                            Transaction transaction = new Transaction(
+                                    this.shop,
+                                    this.shopItem,
+                                    p.getUniqueId(),
+                                    this.total,
+                                    Transaction.TransactionType.BOUGHT);
 
-                        if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
-                            ShopAPI.get().sendDiscordMessage(p, transaction);
-                        }
+                            if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                                ShopAPI.get().sendDiscordMessage(p, transaction);
+                            }
 
-                        if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                            ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
-                        }
+                            if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                                ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
+                            }
 
-                        if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
-                            ShopAPI.get().saveTransactions(transaction);
-                        } else {
-                            Core.getInstance().getTransactions().add(transaction);
-                        }
+                            if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                                ShopAPI.get().saveTransactions(transaction);
+                            } else {
+                                Core.getInstance().getTransactions().add(transaction);
+                            }
+                        });
 
                         p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
                     }
@@ -202,45 +206,48 @@ public class PurchaseInventory extends HartInventory {
             }
 
             if (slot == 32) {
-                if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
-                    return;
-                }
 
-                if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
-                    return;
-                }
+                Bukkit.getServer().getScheduler().runTaskAsynchronously(Core.getInstance(), () -> {
+                    if (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) <= 0) {
+                        return;
+                    }
 
-                int finalRemove = (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) < this.total) ? ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) : this.total;
+                    if (ShopAPI.get().isBuyOnly(this.shop.getName())) {
+                        return;
+                    }
 
-                ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), finalRemove);
-                p.updateInventory();
+                    int finalRemove = (ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) < this.total) ? ShopAPI.get().itemCount(p, this.shopItem.getMaterial()) : this.total;
 
-                Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * finalRemove);
+                    ShopAPI.get().removeItems(p.getInventory(), shopItem.getMaterial(), finalRemove);
+                    p.updateInventory();
 
-                Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * finalRemove).sendPrefixedMessage(p);
-                Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", finalRemove).sendPrefixedMessage(p);
+                    Core.getInstance().getEconomy().depositPlayer(p, shopItem.getSellPrice() * finalRemove);
 
-                // save transaction depending on settings
-                Transaction transaction = new Transaction(
-                        this.shop,
-                        this.shopItem,
-                        p.getUniqueId(),
-                        finalRemove,
-                        Transaction.TransactionType.SOLD);
+                    Core.getInstance().getLocale().getMessage(ShopLang.MONEY_ADD).processPlaceholder("amount", shopItem.getSellPrice() * finalRemove).sendPrefixedMessage(p);
+                    Core.getInstance().getLocale().getMessage(ShopLang.SHOP_SOLD).processPlaceholder("total", finalRemove).sendPrefixedMessage(p);
 
-                if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
-                    ShopAPI.get().sendDiscordMessage(p, transaction);
-                }
+                    // save transaction depending on settings
+                    Transaction transaction = new Transaction(
+                            this.shop,
+                            this.shopItem,
+                            p.getUniqueId(),
+                            finalRemove,
+                            Transaction.TransactionType.SOLD);
 
-                if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
-                    ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
-                }
+                    if ((boolean) SettingsManager.get(Settings.SEND_DISCORD_MSG_ON_TRANSACTION)) {
+                        ShopAPI.get().sendDiscordMessage(p, transaction);
+                    }
 
-                if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
-                    ShopAPI.get().saveTransactions(transaction);
-                } else {
-                    Core.getInstance().getTransactions().add(transaction);
-                }
+                    if ((boolean) SettingsManager.get(Settings.GIVE_RECEIPT_ON_PURCHASE)) {
+                        ShopAPI.get().addItemToPlayerInventory(p, new Receipt(p, transaction).getReceipt());
+                    }
+
+                    if ((boolean) SettingsManager.get(Settings.SAVE_TRANSACTION_TO_FILE_RIGHT_AWAY)) {
+                        ShopAPI.get().saveTransactions(transaction);
+                    } else {
+                        Core.getInstance().getTransactions().add(transaction);
+                    }
+                });
 
                 p.openInventory(new PurchaseInventory(this.shop, this.shopItem, 0).getInventory());
             }

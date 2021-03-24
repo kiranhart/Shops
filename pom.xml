@@ -6,7 +6,7 @@
 
     <groupId>com.kiranhart</groupId>
     <artifactId>Shops</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.3</version>
     <packaging>jar</packaging>
 
     <name>Shops</name>
@@ -65,6 +65,10 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </repository>
+        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -84,9 +88,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.WesJD.AnvilGUI</groupId>
+            <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>ef71db62ec</version>
+            <version>1.4.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
